@@ -5,3 +5,14 @@ body {
     color: white;
     padding-top: 80px;
 }
+button {
+    margin-top: 30px;
+    padding: 14px 28px;
+    font-size: 18px;
+    color: #0f766e;
+    background-color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+
+}
