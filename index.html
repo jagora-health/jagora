@@ -15,11 +15,24 @@
         <div id="visit" class="hidden">
             <h1>New visit</h1>
             <p>Enter the household ID from the wall or flier.</p>
+            <input id="householdId" placeholder="Household ID">
+            <button onclick="goToConfirm()">Continue</button>
+        
+        </div>
+        <div id="confirm" class="hidden">
+            <h1>Household</h1>
+            <p id="shownId"></p>
         </div>
         <script>
             function startVisit() {
                 document.getElementById('welcome').classList.add('hidden');
                 document.getElementById('visit').classList.remove('hidden');
+            }
+            function goToConfirm() {
+                var id = document.getElementById('householdId').value;
+                document.getElementById('shownId').textContent='Household ID:' + Id;
+                document.getElementById('visit'),classList.add('hidden');
+                document.getElementById('confirm').classList.remove('hidden');
             }
         </script>
     </body>
