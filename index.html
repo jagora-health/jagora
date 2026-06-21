@@ -14,8 +14,10 @@
         </div>
         <div id="visit" class="hidden">
             <h1>New visit</h1>
-            <p>Enter the household ID from the wall or flier.</p>
-            <input id="householdId" placeholder="Household ID">
+            <p>Enter the household details.</p>
+            <input id="name" placeholder="Name e.g ADAHAS" maxlength="6">
+            <input id="settlement" placeholder="Sett" maxlength="3">
+            <input id="number" placeholder="No.">
             <button onclick="goToConfirm()">Continue</button>
         
         </div>
@@ -29,8 +31,14 @@
                 document.getElementById('visit').classList.remove('hidden');
             }
             function goToConfirm() {
-                var id = document.getElementById('householdId').value;
-                document.getElementById('shownId').textContent='Household id: ' + id; 
+                var ward = 'DUL'; //Placeholder for now; later this comes from her account
+                var name = document.getElementById('name').value.toUpperCase();
+                var settlement = document.getElementById('settlement').value.toUpperCase();
+                var number = document.getElementById('number').value;
+
+                var id = name + '-' + settlement + '-' + ward + '-' + number;
+
+                document.getElementById('shownId').textContent = 'Household ID: ' + id;
                 document.getElementById('visit').classList.add('hidden');
                 document.getElementById('confirm').classList.remove('hidden');
             }
