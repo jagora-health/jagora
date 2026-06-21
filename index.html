@@ -15,9 +15,10 @@
         <div id="visit" class="hidden">
             <h1>New visit</h1>
             <p>Enter the household details.</p>
-            <input id="name" placeholder="Name e.g ADAHAS" maxlength="6">
-            <input id="settlement" placeholder="Sett" maxlength="3">
-            <input id="number" placeholder="No.">
+            <input id="name" placeholder="Name e.g ADAHAS" maxlength="6" oninput="updatePreview()">
+            <input id="settlement" placeholder="Settlement" maxlength="3" oninput="updatePreview()">
+            <input type="text" id="number" placeholder="No." maxlength="3" inputmode="numeric" oninput="updatePreview()">
+            <p id="preview"></p>
             <button onclick="goToConfirm()">Continue</button>
         
         </div>
@@ -30,14 +31,19 @@
                 document.getElementById('welcome').classList.add('hidden');
                 document.getElementById('visit').classList.remove('hidden');
             }
-            function goToConfirm() {
-                var ward = 'DUL'; //Placeholder for now; later this comes from her account
+            function updatePreview() {
+                var ward = 'DUL';
                 var name = document.getElementById('name').value.toUpperCase();
                 var settlement = document.getElementById('settlement').value.toUpperCase();
                 var number = document.getElementById('number').value;
 
-                var id = name + '-' + settlement + '-' + ward + '-' + number;
+                document.getElementById('preview').textContent = name + '-' + settlement + '-' + ward + '-' +number;
 
+
+
+            }
+            function goToConfirm() {
+                var id = document.getElementById('preview').textContent;
                 document.getElementById('shownId').textContent = 'Household ID: ' + id;
                 document.getElementById('visit').classList.add('hidden');
                 document.getElementById('confirm').classList.remove('hidden');
