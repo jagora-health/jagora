@@ -15,8 +15,8 @@
         <div id="visit" class="hidden">
             <h1>New visit</h1>
             <p>Enter the household details.</p>
-            <input id="name" placeholder="Name e.g ADAHAS" maxlength="6" oninput="updatePreview()">
-            <input id="settlement" placeholder="Settlement" maxlength="3" oninput="updatePreview()">
+            <input id="name" placeholder="Name e.g ADAHAS" maxlength="6" oninput="updatePreview(); jumpIfFull(this, 'settlement')">
+            <input id="settlement" placeholder="Settlement" maxlength="3" oninput="updatePreview(); jumpIfFull(this, 'number')">
             <input type="text" id="number" placeholder="No." maxlength="3" inputmode="numeric" oninput="updatePreview()">
             <p id="preview"></p>
             <button onclick="goToConfirm()">Continue</button>
@@ -47,6 +47,11 @@
                 document.getElementById('shownId').textContent = 'Household ID: ' + id;
                 document.getElementById('visit').classList.add('hidden');
                 document.getElementById('confirm').classList.remove('hidden');
+            }
+            function jumpIfFull(box, nextId) {
+                if (box.value.length === box.maxLength){
+                    document.getElementById(nextId).focus();
+                }
             }
         </script>
     </body>
