@@ -26,7 +26,13 @@
     <div id="confirm" class="hidden">
         <h1>Household</h1>
         <p id="shownId"></p>
-        <button onclick="showScreen('child')">Add child</button>
+        <button onclick="showScreen('sickNow')">add child</button>
+    </div>
+    <div id="sickNow" class="hidden">
+        <h1>Child check</h1>
+        <p>Does the child have diarrhea right now?</p>
+        <button onclick="showScreen('child')">Yes</button>
+        <button onclick="showScreen('childDone')">No</button>
     </div>
 
     <div id="child" class="hidden">
@@ -44,18 +50,27 @@
     <div id="childDone" class="hidden">
         <h1>Anyone else?</h1>
         <p>Add another child for this caregiver, or move on to counselling.</p>
-        <button onclick="showScreen('child')">Add another child</button>
+        <button onclick="showScreen('sickNow')">add another child</button>
         <button onclick="showScreen('counsel')">Done — counsel caregiver</button>
     </div>
 
     <div id="counsel" class="hidden">
-        <h1>Counsel</h1>
-        <p>Counsel the caregiver.</p>
-    </div>
+    <h1>Counsel the caregiver</h1>
+    <p>Play the comprehensive video, or jump to a chapter.</p>
+    <button onclick="alert('Video chapter coming soon')">▶ Play full counselling video</button>
+    <p>Chapters</p>
+    <button onclick="alert('chapter coming soon')">1. Why diarrhoea happens</button>
+    <button onclick="alert('chapter coming soon')">2. Mixing ORS</button>
+    <button onclick="alert('chapter coming soon')">3. ORS dosing</button>
+    <button onclick="alert('chapter coming soon')">4. Giving zinc (10 days)</button>
+    <button onclick="alert('chapter coming soon')">5. Four golden rules</button>
+    <button onclick="alert('chapter coming soon')">6. Danger signs</button>
+    <button onclick="alert('chapter coming soon')">7. Preventing diarrhoea</button>
+</div>
 
     <script>
         function showScreen(id) {
-            var screens = ['welcome', 'visit', 'confirm', 'child', 'refer','childDone','counsel'];
+            var screens = ['welcome', 'visit', 'confirm','sickNow','child', 'refer','childDone','counsel'];
             for (var i = 0; i < screens.length; i++) {
                 document.getElementById(screens[i]).classList.add('hidden');
             }
