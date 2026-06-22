@@ -1,58 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Jagora</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <div id="welcome">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jagora</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="welcome">
         <h1>Jagora</h1>
         <p>The counselling companion</p>
-        <button onclick="startVisit()">Start a visit</button>
-        </div>
-        <div id="visit" class="hidden">
-            <h1>New visit</h1>
-            <p>Enter the household details.</p>
-            <input id="name" placeholder="Name e.g ADAHAS" maxlength="6" oninput="updatePreview(); jumpIfFull(this, 'settlement')">
-            <input id="settlement" placeholder="Settlement" maxlength="3" oninput="updatePreview(); jumpIfFull(this, 'number')">
-            <input type="text" id="number" placeholder="No." maxlength="3" inputmode="numeric" oninput="updatePreview()">
-            <p id="preview"></p>
-            <button onclick="goToConfirm()">Continue</button>
-        
-        </div>
-        <div id="confirm" class="hidden">
-            <h1>Household</h1>
-            <p id="shownId"></p>
-        </div>
-        <script>
-            function startVisit() {
-                document.getElementById('welcome').classList.add('hidden');
-                document.getElementById('visit').classList.remove('hidden');
-            }
-            function updatePreview() {
-                var ward = 'DUL';
-                var name = document.getElementById('name').value.toUpperCase();
-                var settlement = document.getElementById('settlement').value.toUpperCase();
-                var number = document.getElementById('number').value;
+        <button onclick="showScreen('visit')">Start a visit</button>
+    </div>
 
-                document.getElementById('preview').textContent = name + '-' + settlement + '-' + ward + '-' +number;
+    <div id="visit" class="hidden">
+        <h1>New visit</h1>
+        <p>Enter the household details.</p>
+        <input id="name" placeholder="Name e.g ADAHAS" maxlength="6" oninput="updatePreview(); jumpIfFull(this, 'settlement')">
+        <input id="settlement" placeholder="Sett" maxlength="3" oninput="updatePreview(); jumpIfFull(this, 'number')">
+        <input type="text" id="number" placeholder="No." maxlength="3" inputmode="numeric" oninput="updatePreview()">
+        <p id="preview"></p>
+        <button onclick="goToConfirm()">Continue</button>
+    </div>
 
+    <div id="confirm" class="hidden">
+        <h1>Household</h1>
+        <p id="shownId"></p>
+        <button onclick="showScreen('child')">Add child</button>
+    </div>
 
+    <div id="child" class="hidden">
+        <h1>Child check</h1>
+        <p>Does the child have any danger signs?</p>
+        <button onclick="showScreen('refer')">Yes</button>
+        <button onclick="showScreen('counsel')">No</button>
+    </div>
 
+    <div id="refer" class="hidden">
+        <h1>Refer</h1>
+        <p>Refer this child to the clinic now — and still give the ORS + zinc.</p>
+        <button onclick="showScreen('counsel')">Continue to counselling</button>
+    </div>
+
+    <div id="counsel" class="hidden">
+        <h1>Counsel</h1>
+        <p>Counsel the caregiver.</p>
+    </div>
+
+    <script>
+        function showScreen(id) {
+            var screens = ['welcome', 'visit', 'confirm', 'child', 'refer', 'counsel'];
+            for (var i = 0; i < screens.length; i++) {
+                document.getElementById(screens[i]).classList.add('hidden');
             }
-            function goToConfirm() {
-                var id = document.getElementById('preview').textContent;
-                document.getElementById('shownId').textContent = 'Household ID: ' + id;
-                document.getElementById('visit').classList.add('hidden');
-                document.getElementById('confirm').classList.remove('hidden');
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function updatePreview() {
+            var ward = 'DUL';
+            var name = document.getElementById('name').value.toUpperCase();
+            var settlement = document.getElementById('settlement').value.toUpperCase();
+            var number = document.getElementById('number').value;
+
+            document.getElementById('preview').textContent = name + '-' + settlement + '-' + ward + '-' + number;
+        }
+
+        function jumpIfFull(box, nextId) {
+            if (box.value.length === box.maxLength) {
+                document.getElementById(nextId).focus();
             }
-            function jumpIfFull(box, nextId) {
-                if (box.value.length === box.maxLength){
-                    document.getElementById(nextId).focus();
-                }
-            }
-        </script>
-    </body>
+        }
+
+        function goToConfirm() {
+            var id = document.getElementById('preview').textContent;
+            document.getElementById('shownId').textContent = 'Household ID: ' + id;
+            showScreen('confirm');
+        }
+    </script>
+</body>
 </html>
