@@ -33,13 +33,19 @@
         <h1>Child check</h1>
         <p>Does the child have any danger signs?</p>
         <button onclick="showScreen('refer')">Yes</button>
-        <button onclick="showScreen('counsel')">No</button>
+        <button onclick="showScreen('childDone')">No</button>
     </div>
 
     <div id="refer" class="hidden">
         <h1>Refer</h1>
         <p>Refer this child to the clinic now — and still give the ORS + zinc.</p>
-        <button onclick="showScreen('counsel')">Continue to counselling</button>
+        <button onclick="showScreen('childDone')">Continue</button>
+    </div>
+    <div id="childDone" class="hidden">
+        <h1>Anyone else?</h1>
+        <p>Add another child for this caregiver, or move on to counselling.</p>
+        <button onclick="showScreen('child')">Add another child</button>
+        <button onclick="showScreen('counsel')">Done — counsel caregiver</button>
     </div>
 
     <div id="counsel" class="hidden">
@@ -49,7 +55,7 @@
 
     <script>
         function showScreen(id) {
-            var screens = ['welcome', 'visit', 'confirm', 'child', 'refer', 'counsel'];
+            var screens = ['welcome', 'visit', 'confirm', 'child', 'refer','childDone','counsel'];
             for (var i = 0; i < screens.length; i++) {
                 document.getElementById(screens[i]).classList.add('hidden');
             }
