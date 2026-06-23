@@ -67,7 +67,7 @@
     <p id="counselList"></p>
     <p>Play the comprehensive video, or jump to a chapter.</p>
     <button onclick="playFullVideo()">▶ Play full counselling video</button>
-    <button onclick="showScreen('faq')">Questions / FAQ</button>
+    <button onclick="buildFaqList(); showScreen('faq')">Questions / FAQ</button>
     <p>Chapters</p>
     <button onclick="alert('chapter coming soon')">1. Why diarrhoea happens</button>
     <button onclick="alert('chapter coming soon')">2. Mixing ORS</button>
@@ -80,11 +80,8 @@
 </div>
 <div id="faq" class="hidden">
     <h1>Questions & FAQ</h1>
-    <p>Common questions (Hausa audio):</p>
-    <button onclick="alert('Hausa audio answer coming soon')">Can I give it with breast milk?</button>
-    <button onclick="alert('Hausa audio answer coming soon')">What if the child vomits it?</button>
-    <button onclick="alert('Hausa audio answer coming soon')">How long does ORS last?</button>
-    <p>Caregiver asked something new? Record it:</p>
+     <p>Common questions:</p>
+     <div id="faqList"></div>
     <button onclick="startRecording()">● Record a question</button>
     <button onclick="stopRecording()">■ Stop</button>
     <p id="recStatus"></p>
@@ -102,6 +99,44 @@
         var mediaRecorder;
         var audioChunks = [];
         var questions = [];
+        var faqs = [
+    {
+        q: 'Za a iya bayar da shi tare da nonon uwa?',
+        qEn: 'Can I give it with breast milk?',
+        aHa: 'Ee. Ana iya narkar da kwayar zinc a cikin nonon uwa ko tsabtataccen ruwa.',
+        aEn: 'Yes. The zinc can be dissolved in breast milk or clean water.'
+    },
+    {
+        q: 'Idan yaron ya amayar dashi fa?',
+        qEn: 'What if the child vomits it?',
+        aHa: 'A jira minti goma, sannan a ci gaba da bayarwa a hankali, kadan kadan.',
+        aEn: 'Wait ten minutes, then continue giving slowly, a little at a time.'
+    },
+    {
+        q: 'Tsawon wani lokacin ORS ke dauka idan an hada?',
+        qEn: 'How long does ORS last?',
+        aHa: 'Sa\'o\'i ashirin da hudu. Bayan haka a zubar, a hada sabo.',
+        aEn: 'Twenty-four hours. After that, throw it away and mix fresh.'
+    }
+];
+
+function buildFaqList() {
+    var container = document.getElementById('faqList');
+    container.innerHTML = '';
+    for (var i = 0; i < faqs.length; i++) {
+        var item = faqs[i];
+        var block = document.createElement('div');
+        block.innerHTML =
+            '<button onclick="this.nextElementSibling.classList.toggle(\'hidden\')">' +
+                item.q + '</button>' +
+            '<div class="hidden">' +
+                '<button onclick="alert(\'Hausa audio answer coming soon\')">▶ Saurari amsa (Hausa)</button>' +
+                '<p>' + item.aHa + '</p>' +
+                '<p style="opacity:0.6;font-size:0.85em">' + item.aEn + '</p>' +
+            '</div>';
+        container.appendChild(block);
+    }
+}
         function showScreen(id) {
             var screens = ['welcome', 'visit', 'confirm','sickNow','child', 'refer','childDone','caregiverDone','counsel','faq'];
             for (var i = 0; i < screens.length; i++) {
