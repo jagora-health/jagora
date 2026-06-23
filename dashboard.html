@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jagora — Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <header class="topbar">
+        <span class="logo">Jagora</span>
+        <span class="subtitle">Programme Dashboard — Bauchi</span>
+        <span id="roleLabel" class="role"></span>
+    </header>
+
+    <section class="callout" id="referralCallout"></section>
+
+    <section class="statRow" id="statRow"></section>
+    <section class="chartRow">
+        <div class="chartCard">
+            <h3>Counselling coverage by ward</h3>
+            <canvas id="coverageChart"></canvas>
+        </div>
+        <div class="chartCard">
+            <h3>Referral funnel</h3>
+            <canvas id="funnelChart"></canvas>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="seed.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>
