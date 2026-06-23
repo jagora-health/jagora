@@ -103,6 +103,14 @@
         }
 
         function goToConfirm() {
+            var name=document.getElementById('name').value;
+            var settlement = document.getElementById('settlement').value;
+            var number = document.getElementById('number').value;
+
+            if (name.length<6||settlement.length<3||number.length<3){
+                alert ('Please complete the ID:name(6),settlement(3), and number(3 digits).');
+                return;
+            }
             var id = document.getElementById('preview').textContent;
             caregivers.push(id);
             document.getElementById('shownId').textContent = 'Household ID: ' + id;
