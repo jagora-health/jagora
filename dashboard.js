@@ -1,4 +1,5 @@
 var allVisits = [];
+var shownVisits = [];
 function generateVisits() {
     var cbds = [
         'ahmad.nasir.bau.campaigner',
@@ -87,38 +88,80 @@ function buildFunnelChart() {
     });
 }
 
-function buildMap() {
-    var map = L.map('map').setView([10.31, 9.84], 11);
+var mapObject;
+var mapMarkers = [];
 
+function buildMap() {
+    mapObject = L.map('map').setView([10.31, 9.84], 11);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap'
-    }).addTo(map);
+    }).addTo(mapObject);
+    drawMarkers();
+}
 
-    for (var i = 0; i < allVisits.length; i++) {
-        var v = allVisits[i];
+function drawMarkers() {
+    for (var i = 0; i < mapMarkers.length; i++) {
+        mapObject.removeLayer(mapMarkers[i]);
+    }
+    mapMarkers = [];
+
+    for (var i = 0; i < shownVisits.length; i++) {
+        var v = shownVisits[i];
         var color = (v.type === 'referral') ? '#f59e0b' : '#0f766e';
-        L.circleMarker([v.lat, v.lng], {
+        var marker = L.circleMarker([v.lat, v.lng], {
             radius: 9,
             color: color,
             fillColor: color,
             fillOpacity: 0.8
-        }).addTo(map).bindPopup(
-            '<b>' + v.settlement + '</b><br>' +
-            v.type + '<br>' +
-            'CBD: ' + v.cbd
+        }).addTo(mapObject).bindPopup(
+            '<b>' + v.settlement + '</b><br>' + v.type + '<br>CBD: ' + v.cbd
         );
+        mapMarkers.push(marker);
     }
 }
 function applyFilter(period) {
-    document.getElementById('filterStatus').textContent = 'Selected: ' + period;
+    if (period === 'all') {
+        shownVisits = allVisits;
+        document.getElementById('filterStatus').textContent = 'Showing: all time';
+    } else {
+        shownVisits = allVisits.filter(function(v) {
+            return v.date.indexOf(period) === 0;
+        });
+        document.getElementById('filterStatus').textContent = 'Showing: ' + period;
+    }
+    refreshPanels();
 }
 
 function applyCustomFilter() {
     var from = document.getElementById('fromDate').value;
     var to = document.getElementById('toDate').value;
-    document.getElementById('filterStatus').textContent = 'Selected: ' + from + ' to ' + to;
+    if (!from || !to) {
+        document.getElementById('filterStatus').textContent = 'Pick both dates';
+        return;
+    }
+    shownVisits = allVisits.filter(function(v) {
+        return v.date >= from && v.date <= to;
+    });
+    document.getElementById('filterStatus').textContent = 'Showing: ' + from + ' to ' + to;
+    refreshPanels();
+}
+function refreshPanels() {
+    drawMarkers();
+    updateStatsFromShown();
+}
+
+function updateStatsFromShown() {
+    var counselled = 0, referred = 0;
+    for (var i = 0; i < shownVisits.length; i++) {
+        if (shownVisits[i].type === 'referral') { referred++; }
+        else { counselled++; }
+    }
+    document.getElementById('filterStatus').textContent +=
+        '  (' + shownVisits.length + ' visits: ' + counselled + ' counselled, ' + referred + ' referred)';
 }
 allVisits = generateVisits();
+shownVisits = allVisits;
+
 buildStatCards();
 buildReferralCallout();
 buildCoverageChart();
