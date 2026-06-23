@@ -31,15 +31,15 @@
     <div id="sickNow" class="hidden">
         <h1>Child check</h1>
         <p>Does the child have diarrhea right now?</p>
-        <button onclick="showScreen('child')">Yes</button>
-        <button onclick="showScreen('childDone')">No</button>
+       <button onclick="answerDiarrhoea(true)">Yes</button>
+       <button onclick="answerDiarrhoea(false)">No</button>
     </div>
 
     <div id="child" class="hidden">
         <h1>Child check</h1>
         <p>Does the child have any danger signs?</p>
-        <button onclick="showScreen('refer')">Yes</button>
-        <button onclick="showScreen('childDone')">No</button>
+        <button onclick="answerDanger(true)">Yes</button>
+        <button onclick="answerDanger(false)">No</button>
     </div>
 
     <div id="refer" class="hidden">
@@ -116,6 +116,30 @@
             document.getElementById('shownId').textContent = 'Household ID: ' + id;
             showScreen('confirm');
         }
+        function answerDiarrhoea(hasDiarrhoea) {
+    var caregiver = caregivers[caregivers.length - 1];
+    caregiver.children.push({
+        diarrhoeaNow: hasDiarrhoea,
+        dangerSigns: false,
+        referred: false
+    });
+    if (hasDiarrhoea) {
+        showScreen('child');
+    } else {
+        showScreen('childDone');
+    }
+}
+       function answerDanger(hasDanger) {
+    var caregiver = caregivers[caregivers.length - 1];
+    var child = caregiver.children[caregiver.children.length - 1];
+    child.dangerSigns = hasDanger;
+    if (hasDanger) {
+        child.referred = true;
+        showScreen('refer');
+    } else {
+        showScreen('childDone');
+    }
+}
         function goToCounsel() {
             var ids = caregivers.map(function(c) { return c.id; });
             document.getElementById('counselList').textContent =
