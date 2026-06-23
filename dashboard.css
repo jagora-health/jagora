@@ -8,13 +8,18 @@ body {
 .topbar {
     background: #0f766e;
     color: white;
-    padding: 16px 24px;
+    padding: 18px 24px;
     display: flex;
-    align-items: center;
-    gap: 16px;
+    align-items: baseline;
+    gap: 14px;
 }
 .logo { font-size: 1.4em; font-weight: 700; }
-.subtitle { opacity: 0.9; }
+.subtitle {
+    opacity: 0.85;
+    font-size: 0.95em;
+    padding-left: 14px;
+    border-left: 1px solid rgba(255,255,255,0.3);
+}
 .role { margin-left: auto; opacity: 0.9; font-size: 0.9em; }
 
 .callout {
