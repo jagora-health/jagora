@@ -10,7 +10,7 @@
     <div id="welcome">
         <h1>Jagora</h1>
         <p>The counselling companion</p>
-        <button onclick="showScreen('visit')">Start a visit</button>
+        <button onclick="startVisit()">Start a visit</button>
     </div>
 
     <div id="visit" class="hidden">
@@ -80,6 +80,9 @@
 
     <script>
         var caregivers = [];
+        var cbdUsername = 'ahmad.nasir.bau.campaigner';
+        var visitStart = '';
+        var visitGps = '';
         function showScreen(id) {
             var screens = ['welcome', 'visit', 'confirm','sickNow','child', 'refer','childDone','caregiverDone','counsel'];
             for (var i = 0; i < screens.length; i++) {
@@ -87,6 +90,26 @@
             }
             document.getElementById(id).classList.remove('hidden');
         }
+        function startVisit() {
+    visitStart = new Date().toLocaleString();
+    visitGps = 'locating...';
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                visitGps = position.coords.latitude + ', ' + position.coords.longitude;
+            },
+            function(error) {
+                visitGps = 'unavailable';
+            }
+        );
+    } else {
+        visitGps = 'unavailable';
+    }
+
+    showScreen('visit');
+}
+
 
         function updatePreview() {
             var ward = 'DUL';
