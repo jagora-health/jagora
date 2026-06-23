@@ -15,6 +15,19 @@
     </header>
 
     <section class="callout" id="referralCallout"></section>
+    <section class="filterBar">
+        <span class="filterLabel">Period:</span>
+        <button onclick="applyFilter('all')">All time</button>
+        <button onclick="applyFilter('2026-01')">January</button>
+        <button onclick="applyFilter('2026-02')">February</button>
+        <button onclick="applyFilter('2026-03')">March</button>
+        <span class="filterLabel">Custom:</span>
+        <input type="date" id="fromDate">
+        <span>to</span>
+        <input type="date" id="toDate">
+        <button onclick="applyCustomFilter()">Apply</button>
+        <span id="filterStatus" class="filterStatus"></span>
+    </section>
 
     <section class="statRow" id="statRow"></section>
     <section class="chartRow">

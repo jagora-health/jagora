@@ -109,7 +109,15 @@ function buildMap() {
         );
     }
 }
+function applyFilter(period) {
+    document.getElementById('filterStatus').textContent = 'Selected: ' + period;
+}
 
+function applyCustomFilter() {
+    var from = document.getElementById('fromDate').value;
+    var to = document.getElementById('toDate').value;
+    document.getElementById('filterStatus').textContent = 'Selected: ' + from + ' to ' + to;
+}
 allVisits = generateVisits();
 buildStatCards();
 buildReferralCallout();
