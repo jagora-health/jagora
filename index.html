@@ -74,6 +74,7 @@
     <button onclick="alert('chapter coming soon')">5. Four golden rules</button>
     <button onclick="alert('chapter coming soon')">6. Danger signs</button>
     <button onclick="alert('chapter coming soon')">7. Preventing diarrhoea</button>
+    <button onclick="finishVisit()">Finish visit</button>
 </div>
 
     <script>
@@ -118,6 +119,14 @@
             document.getElementById('number').value='';
             document.getElementById('preview').textContent='';
             showScreen('visit');
+        }
+        function finishVisit(){
+            caregivers=[];
+            document.getElementById('name').value='';
+            document.getElementById('settlement').value='';
+            document.getElementById('number').value='';
+            document.getElementById('preview').textContent='';
+            showScreen('welcome');
         }
     </script>
 </body>
