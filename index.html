@@ -51,11 +51,19 @@
         <h1>Anyone else?</h1>
         <p>Add another child for this caregiver, or move on to counselling.</p>
         <button onclick="showScreen('sickNow')">add another child</button>
-        <button onclick="showScreen('counsel')">Done — counsel caregiver</button>
+        <button onclick="showScreen('caregiverDone')">Done with this caregiver</button>
     </div>
+    <div id="caregiverDone" class="hidden">
+        <h1>Another caregiver?</h1>
+        <p>Add Another caregiver to this session, or counsel everyone now.</p>
+        <button onclick="addCaregiver()">Add another caregiver</button>
+        <button onclick="goToCounsel()">Counsel now</button>
+    </div>
+
 
     <div id="counsel" class="hidden">
     <h1>Counsel the caregiver</h1>
+    <p id="counselList"></p>
     <p>Play the comprehensive video, or jump to a chapter.</p>
     <button onclick="alert('Video chapter coming soon')">▶ Play full counselling video</button>
     <p>Chapters</p>
@@ -69,8 +77,9 @@
 </div>
 
     <script>
+        var caregivers = [];
         function showScreen(id) {
-            var screens = ['welcome', 'visit', 'confirm','sickNow','child', 'refer','childDone','counsel'];
+            var screens = ['welcome', 'visit', 'confirm','sickNow','child', 'refer','childDone','caregiverDone','counsel'];
             for (var i = 0; i < screens.length; i++) {
                 document.getElementById(screens[i]).classList.add('hidden');
             }
@@ -94,8 +103,21 @@
 
         function goToConfirm() {
             var id = document.getElementById('preview').textContent;
+            caregivers.push(id);
             document.getElementById('shownId').textContent = 'Household ID: ' + id;
             showScreen('confirm');
+        }
+        function goToCounsel() {
+            document.getElementById('counselList').textContent=
+            'Counselling ' + caregivers.length  + ' caregiver(s): ' + caregivers.join(', ');
+            showScreen('counsel');
+        }
+        function addCaregiver(){
+            document.getElementById('name').value='';
+            document.getElementById('settlement').value='';
+            document.getElementById('number').value='';
+            document.getElementById('preview').textContent='';
+            showScreen('visit');
         }
     </script>
 </body>
