@@ -1,3 +1,29 @@
+function generateVisits() {
+    var cbds = [
+        'ahmad.nasir.bau.campaigner',
+        'musa.ibrahim.makama.campaigner',
+        'sani.yusuf.birshi.campaigner',
+        'aisha.bello.zungur.campaigner',
+        'fatima.sani.galambi.campaigner'
+    ];
+    var visits = [];
+    for (var i = 0; i < seed.settlements.length; i++) {
+        var s = seed.settlements[i];
+        for (var j = 0; j < 5; j++) {
+            var jitterLat = (Math.random() - 0.5) * 0.02;
+            var jitterLng = (Math.random() - 0.5) * 0.02;
+            var isReferral = Math.random() < 0.15;
+            visits.push({
+                settlement: s.name,
+                lat: s.lat + jitterLat,
+                lng: s.lng + jitterLng,
+                type: isReferral ? 'referral' : 'counselled',
+                cbd: cbds[Math.floor(Math.random() * cbds.length)]
+            });
+        }
+    }
+    return visits;
+}
 function buildStatCards() {
     var cards = [
         { label: 'Caregivers counselled', value: seed.totals.caregiversCounselled, accent: 'teal' },
@@ -53,9 +79,33 @@ function buildFunnelChart() {
         },
         options: { plugins: { legend: { display: false } } }
     });
+    function buildMap() {
+    var map = L.map('map').setView([10.31, 9.84], 11);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    var allVisits = generateVisits();
+    for (var i = 0; i < allVisits.length; i++) {
+        var v = allVisits[i];
+        var color = (v.type === 'referral') ? '#f59e0b' : '#0f766e';
+        L.circleMarker([v.lat, v.lng], {
+            radius: 9,
+            color: color,
+            fillColor: color,
+            fillOpacity: 0.8
+        }).addTo(map).bindPopup(
+            '<b>' + v.settlement + '</b><br>' +
+            v.type + '<br>' +
+            'CBD: ' + v.cbd
+        );
+    }
+}
 }
 
 buildStatCards();
 buildReferralCallout();
 buildCoverageChart();
 buildFunnelChart();
+buildMap();

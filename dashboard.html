@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jagora — Dashboard</title>
     <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 </head>
 <body>
     <header class="topbar">
@@ -26,7 +27,14 @@
             <canvas id="funnelChart"></canvas>
         </div>
     </section>
+    <section class="mapSection">
+        <div class="chartCard">
+            <h3>Visit locations — GPS verified</h3>
+            <div id="map"></div>
+        </div>
+    </section>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="seed.js"></script>
     <script src="dashboard.js"></script>
