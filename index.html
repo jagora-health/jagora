@@ -66,7 +66,7 @@
     <h1>Counsel the caregiver</h1>
     <p id="counselList"></p>
     <p>Play the comprehensive video, or jump to a chapter.</p>
-    <button onclick="alert('Video chapter coming soon')">▶ Play full counselling video</button>
+    <button onclick="playFullVideo()">▶ Play full counselling video</button>
     <p>Chapters</p>
     <button onclick="alert('chapter coming soon')">1. Why diarrhoea happens</button>
     <button onclick="alert('chapter coming soon')">2. Mixing ORS</button>
@@ -83,6 +83,8 @@
         var cbdUsername = 'ahmad.nasir.bau.campaigner';
         var visitStart = '';
         var visitGps = '';
+        var visits = [];
+        var videoPlayed = false;
         function showScreen(id) {
             var screens = ['welcome', 'visit', 'confirm','sickNow','child', 'refer','childDone','caregiverDone','counsel'];
             for (var i = 0; i < screens.length; i++) {
@@ -170,6 +172,10 @@
             'Counselling ' + caregivers.length + ' caregiver(s): ' + ids.join(', ');
             showScreen('counsel');
         }
+        function playFullVideo() {
+    alert('Playing full counselling video...');
+    videoPlayed = true;
+}
         function addCaregiver(){
             document.getElementById('name').value='';
             document.getElementById('settlement').value='';
@@ -177,14 +183,48 @@
             document.getElementById('preview').textContent='';
             showScreen('visit');
         }
-        function finishVisit(){
-            caregivers=[];
-            document.getElementById('name').value='';
-            document.getElementById('settlement').value='';
-            document.getElementById('number').value='';
-            document.getElementById('preview').textContent='';
-            showScreen('welcome');
+       function finishVisit() {
+       if (!videoPlayed) {
+        alert('Please play the counselling video before finishing.');
+        return;
+    } 
+    for (var k = 0; k < caregivers.length; k++) {
+        caregivers[k].counselled = true;
+    }
+    var visit = {
+        cbd: cbdUsername,
+        start: visitStart,
+        gps: visitGps,
+        caregivers: caregivers
+    };
+    visits.push(visit);
+
+    var childCount = 0;
+    var referredCount = 0;
+    for (var i = 0; i < caregivers.length; i++) {
+        childCount = childCount + caregivers[i].children.length;
+        for (var j = 0; j < caregivers[i].children.length; j++) {
+            if (caregivers[i].children[j].referred) {
+                referredCount = referredCount + 1;
+            }
         }
+    }
+
+    alert('Visit saved.\n' +
+          caregivers.length + ' caregiver(s) counselled\n' +
+          childCount + ' child(ren) checked\n' +
+          referredCount + ' referred');
+
+    caregivers = [];
+    videoPlayed = false;
+    document.getElementById('name').value = '';
+    document.getElementById('settlement').value = '';
+    document.getElementById('number').value = '';
+    document.getElementById('preview').textContent = '';
+    showScreen('welcome');
+    
+
+}
     </script>
 </body>
 </html>
