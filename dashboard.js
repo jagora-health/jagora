@@ -6,6 +6,7 @@ function generateVisits() {
         'aisha.bello.zungur.campaigner',
         'fatima.sani.galambi.campaigner'
     ];
+    var months = ['2026-01', '2026-02', '2026-03'];
     var visits = [];
     for (var i = 0; i < seed.settlements.length; i++) {
         var s = seed.settlements[i];
@@ -13,12 +14,16 @@ function generateVisits() {
             var jitterLat = (Math.random() - 0.5) * 0.02;
             var jitterLng = (Math.random() - 0.5) * 0.02;
             var isReferral = Math.random() < 0.15;
+            var month = months[Math.floor(Math.random() * months.length)];
+            var day = Math.floor(Math.random() * 28) + 1;
+            var dayStr = (day < 10) ? '0' + day : '' + day;
             visits.push({
                 settlement: s.name,
                 lat: s.lat + jitterLat,
                 lng: s.lng + jitterLng,
                 type: isReferral ? 'referral' : 'counselled',
-                cbd: cbds[Math.floor(Math.random() * cbds.length)]
+                cbd: cbds[Math.floor(Math.random() * cbds.length)],
+                date: month + '-' + dayStr
             });
         }
     }
