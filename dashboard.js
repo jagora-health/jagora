@@ -1,3 +1,4 @@
+var allVisits = [];
 function generateVisits() {
     var cbds = [
         'ahmad.nasir.bau.campaigner',
@@ -93,7 +94,6 @@ function buildMap() {
         attribution: '© OpenStreetMap'
     }).addTo(map);
 
-    var allVisits = generateVisits();
     for (var i = 0; i < allVisits.length; i++) {
         var v = allVisits[i];
         var color = (v.type === 'referral') ? '#f59e0b' : '#0f766e';
@@ -110,6 +110,7 @@ function buildMap() {
     }
 }
 
+allVisits = generateVisits();
 buildStatCards();
 buildReferralCallout();
 buildCoverageChart();
