@@ -67,6 +67,7 @@
     <p id="counselList"></p>
     <p>Play the comprehensive video, or jump to a chapter.</p>
     <button onclick="playFullVideo()">▶ Play full counselling video</button>
+    <button onclick="showScreen('faq')">Questions / FAQ</button>
     <p>Chapters</p>
     <button onclick="alert('chapter coming soon')">1. Why diarrhoea happens</button>
     <button onclick="alert('chapter coming soon')">2. Mixing ORS</button>
@@ -77,6 +78,19 @@
     <button onclick="alert('chapter coming soon')">7. Preventing diarrhoea</button>
     <button onclick="finishVisit()">Finish visit</button>
 </div>
+<div id="faq" class="hidden">
+    <h1>Questions & FAQ</h1>
+    <p>Common questions (Hausa audio):</p>
+    <button onclick="alert('Hausa audio answer coming soon')">Can I give it with breast milk?</button>
+    <button onclick="alert('Hausa audio answer coming soon')">What if the child vomits it?</button>
+    <button onclick="alert('Hausa audio answer coming soon')">How long does ORS last?</button>
+    <p>Caregiver asked something new? Record it:</p>
+    <button onclick="startRecording()">● Record a question</button>
+    <button onclick="stopRecording()">■ Stop</button>
+    <p id="recStatus"></p>
+    <audio id="playback" controls></audio>
+    <button onclick="showScreen('counsel')">Back to counselling</button>
+</div>
 
     <script>
         var caregivers = [];
@@ -85,8 +99,11 @@
         var visitGps = '';
         var visits = [];
         var videoPlayed = false;
+        var mediaRecorder;
+        var audioChunks = [];
+        var questions = [];
         function showScreen(id) {
-            var screens = ['welcome', 'visit', 'confirm','sickNow','child', 'refer','childDone','caregiverDone','counsel'];
+            var screens = ['welcome', 'visit', 'confirm','sickNow','child', 'refer','childDone','caregiverDone','counsel','faq'];
             for (var i = 0; i < screens.length; i++) {
                 document.getElementById(screens[i]).classList.add('hidden');
             }
@@ -176,6 +193,36 @@
     alert('Playing full counselling video...');
     videoPlayed = true;
 }
+        function startRecording() {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(function(stream) {
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+            mediaRecorder.ondataavailable = function(e) {
+                audioChunks.push(e.data);
+            };
+            mediaRecorder.onstop = function() {
+                var blob = new Blob(audioChunks, { type: 'audio/webm' });
+                var url = URL.createObjectURL(blob);
+                questions.push({ time: new Date().toLocaleString(), url: url });
+                document.getElementById('playback').src = url;
+                document.getElementById('recStatus').textContent =
+                    'Question saved — will sync to backend for review.';
+                stream.getTracks().forEach(function(t) { t.stop(); });
+            };
+            mediaRecorder.start();
+            document.getElementById('recStatus').textContent = 'Recording... tap Stop when done.';
+            })
+            .catch(function(err) {
+            document.getElementById('recStatus').textContent = 'Microphone not available.';
+            });
+        }
+
+        function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+    }
+}
         function addCaregiver(){
             document.getElementById('name').value='';
             document.getElementById('settlement').value='';
@@ -184,10 +231,10 @@
             showScreen('visit');
         }
        function finishVisit() {
-       if (!videoPlayed) {
+    if (!videoPlayed) {
         alert('Please play the counselling video before finishing.');
         return;
-    } 
+    }
     for (var k = 0; k < caregivers.length; k++) {
         caregivers[k].counselled = true;
     }
@@ -195,10 +242,10 @@
         cbd: cbdUsername,
         start: visitStart,
         gps: visitGps,
-        caregivers: caregivers
+        caregivers: caregivers,
+        questions: questions
     };
     visits.push(visit);
-
     var childCount = 0;
     var referredCount = 0;
     for (var i = 0; i < caregivers.length; i++) {
@@ -222,8 +269,7 @@
     document.getElementById('number').value = '';
     document.getElementById('preview').textContent = '';
     showScreen('welcome');
-    
-
+    questions = [];
 }
     </script>
 </body>
