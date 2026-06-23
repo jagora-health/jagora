@@ -79,7 +79,9 @@ function buildFunnelChart() {
         },
         options: { plugins: { legend: { display: false } } }
     });
-    function buildMap() {
+}
+
+function buildMap() {
     var map = L.map('map').setView([10.31, 9.84], 11);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -101,7 +103,6 @@ function buildFunnelChart() {
             'CBD: ' + v.cbd
         );
     }
-}
 }
 
 buildStatCards();
