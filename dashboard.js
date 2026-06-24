@@ -143,31 +143,46 @@ function buildReferralCallout() {
         'For the first time, ' + seed.totals.referralsMade +
         ' referrals tracked with GPS, time, and worker.';
 }
+var coverageChartObj;
+
 function buildCoverageChart() {
-    new Chart(document.getElementById('coverageChart'), {
+    var counts = countBy(shownVisits, 'ward');
+    var labels = seed.wards;
+    var data = [];
+    for (var i = 0; i < labels.length; i++) {
+        data.push(counts[labels[i]] || 0);
+    }
+
+    if (coverageChartObj) { coverageChartObj.destroy(); }
+
+    coverageChartObj = new Chart(document.getElementById('coverageChart'), {
         type: 'bar',
         data: {
-            labels: seed.wards,
-            datasets: [{
-                label: 'Caregivers counselled',
-                data: seed.wardCounselled,
-                backgroundColor: '#0f766e'
-            }]
+            labels: labels,
+            datasets: [{ label: 'Visits', data: data, backgroundColor: '#0f766e' }]
         },
-        options: {
-            indexAxis: 'y',
-            plugins: { legend: { display: false } }
-        }
+        options: { indexAxis: 'y', plugins: { legend: { display: false } } }
     });
 }
 
+var funnelChartObj;
+
 function buildFunnelChart() {
-    new Chart(document.getElementById('funnelChart'), {
+    var childrenChecked = 0, referred = 0;
+    for (var i = 0; i < shownVisits.length; i++) {
+        childrenChecked += shownVisits[i].children;
+        if (shownVisits[i].type === 'referral') { referred++; }
+    }
+    var diarrhoea = Math.round(childrenChecked * 0.28);
+
+    if (funnelChartObj) { funnelChartObj.destroy(); }
+
+    funnelChartObj = new Chart(document.getElementById('funnelChart'), {
         type: 'bar',
         data: {
             labels: ['Children checked', 'Diarrhoea cases', 'Referred'],
             datasets: [{
-                data: [seed.funnel.childrenChecked, seed.funnel.diarrhoeaCases, seed.funnel.referred],
+                data: [childrenChecked, diarrhoea, referred],
                 backgroundColor: ['#0f766e', '#14b8a6', '#f59e0b']
             }]
         },
@@ -235,6 +250,8 @@ function applyCustomFilter() {
 function refreshPanels() {
     drawMarkers();
     updateStatsFromShown();
+    buildCoverageChart();
+    buildFunnelChart();
 }
 
 function updateStatsFromShown() {
