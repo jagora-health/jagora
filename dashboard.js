@@ -4,6 +4,27 @@ var sortedCbds = [];
 var sortColumn = 'counselled';
 var sortAsc = false;
 var wardFilter = 'all';
+function getLoggedInUser() {
+    var params = new URLSearchParams(window.location.search);
+    return params.get('user') || 'sani.yusuf.bauchi.state_team';
+}
+
+var currentUser = getLoggedInUser();
+var currentRole = currentUser.split('.').pop();
+var currentScope = currentUser.split('.')[2];
+
+function showRoleLabel() {
+    var roleNames = {
+        'ward_lead': 'Ward Lead',
+        'lga_lead': 'LGA Lead',
+        'state_team': 'State Team',
+        'admin': 'Administrator'
+    };
+    var label = roleNames[currentRole] || currentRole;
+    document.getElementById('roleLabel').textContent =
+        label + ' · ' + currentScope + '  |  Sign out';
+}
+
 function countBy(visits, dimension, field) {
     var result = {};
     for (var i = 0; i < visits.length; i++) {
@@ -412,3 +433,4 @@ buildFunnelChart();
 buildMap();
 buildCbdTable();
 buildReviewList();
+showRoleLabel();
