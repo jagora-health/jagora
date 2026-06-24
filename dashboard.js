@@ -61,17 +61,22 @@ function closeCbdDetail() {
 }
 function generateVisits() {
     var cbds = [
-        'ahmad.nasir.bau.campaigner',
-        'musa.ibrahim.makama.campaigner',
-        'sani.yusuf.birshi.campaigner',
-        'aisha.bello.zungur.campaigner',
-        'fatima.sani.galambi.campaigner'
+        'ahmad.nasir.bau.campaigner', 'musa.ibrahim.makama.campaigner',
+        'sani.yusuf.birshi.campaigner', 'aisha.bello.zungur.campaigner',
+        'fatima.sani.galambi.campaigner', 'ibrahim.sule.majidadi.campaigner',
+        'hauwa.lawan.mun.campaigner', 'yusuf.adamu.dandango.campaigner',
+        'zainab.haruna.kundum.campaigner', 'bello.tanko.kangyare.campaigner',
+        'maryam.danjuma.daniya.campaigner', 'usman.aliyu.bau.campaigner',
+        'halima.shehu.makama.campaigner', 'sadiq.bala.birshi.campaigner',
+        'amina.umar.zungur.campaigner', 'garba.gambo.galambi.campaigner',
+        'rakiya.iliya.majidadi.campaigner', 'nuhu.maina.mun.campaigner',
+        'saratu.dauda.dandango.campaigner', 'kabiru.audu.kundum.campaigner'
     ];
     var months = ['2026-01', '2026-02', '2026-03'];
     var visits = [];
     for (var i = 0; i < seed.settlements.length; i++) {
         var s = seed.settlements[i];
-        for (var j = 0; j < 5; j++) {
+        for (var j = 0; j < 12; j++) {
             var jitterLat = (Math.random() - 0.5) * 0.02;
             var jitterLng = (Math.random() - 0.5) * 0.02;
             var isReferral = Math.random() < 0.15;

@@ -31,11 +31,26 @@ var seed = {
         { name: 'Kobi', lat: 10.3067, lng: 9.8389 },
         { name: 'Dandango', lat: 10.3201, lng: 9.8556 }
     ],
-    cbdNames: {
+   cbdNames: {
         'ahmad.nasir.bau.campaigner': 'Ahmad Nasir',
         'musa.ibrahim.makama.campaigner': 'Musa Ibrahim',
         'sani.yusuf.birshi.campaigner': 'Sani Yusuf',
         'aisha.bello.zungur.campaigner': 'Aisha Bello',
-        'fatima.sani.galambi.campaigner': 'Fatima Sani'
+        'fatima.sani.galambi.campaigner': 'Fatima Sani',
+        'ibrahim.sule.majidadi.campaigner': 'Ibrahim Sule',
+        'hauwa.lawan.mun.campaigner': 'Hauwa Lawan',
+        'yusuf.adamu.dandango.campaigner': 'Yusuf Adamu',
+        'zainab.haruna.kundum.campaigner': 'Zainab Haruna',
+        'bello.tanko.kangyare.campaigner': 'Bello Tanko',
+        'maryam.danjuma.daniya.campaigner': 'Maryam Danjuma',
+        'usman.aliyu.bau.campaigner': 'Usman Aliyu',
+        'halima.shehu.makama.campaigner': 'Halima Shehu',
+        'sadiq.bala.birshi.campaigner': 'Sadiq Bala',
+        'amina.umar.zungur.campaigner': 'Amina Umar',
+        'garba.gambo.galambi.campaigner': 'Garba Gambo',
+        'rakiya.iliya.majidadi.campaigner': 'Rakiya Iliya',
+        'nuhu.maina.mun.campaigner': 'Nuhu Maina',
+        'saratu.dauda.dandango.campaigner': 'Saratu Dauda',
+        'kabiru.audu.kundum.campaigner': 'Kabiru Audu'
     }
 };
