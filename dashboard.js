@@ -356,6 +356,32 @@ function setWardFilter() {
     wardFilter = document.getElementById('wardSelect').value;
     buildCbdTable();
 }
+function buildReviewList() {
+    var container = document.getElementById('reviewList');
+    var html = '';
+    for (var i = 0; i < seed.reviewQuestions.length; i++) {
+        var item = seed.reviewQuestions[i];
+        var badge = '<span class="badge badge-' + item.status + '">' + item.status + '</span>';
+        var actions = '';
+        if (item.status === 'pending') {
+            actions =
+                '<button class="approveBtn" onclick="reviewAction(' + item.id + ', \'approved\')">Approve</button>' +
+                '<button class="rejectBtn" onclick="reviewAction(' + item.id + ', \'rejected\')">Reject</button>';
+        } else if (item.status === 'approved') {
+            actions = '<span class="pipelineNote">→ becoming an FAQ entry</span>';
+        }
+        html +=
+            '<div class="reviewItem">' +
+                '<div class="reviewQ">' +
+                    '<button class="playBtn" onclick="alert(\'Playing recorded question (Hausa)\')">▶</button>' +
+                    '<span>' + item.q + '</span>' +
+                '</div>' +
+                '<div class="reviewMeta">' + item.cbd + ' · ' + item.settlement + ' · ' + item.date + ' ' + badge + '</div>' +
+                '<div class="reviewActions">' + actions + '</div>' +
+            '</div>';
+    }
+    container.innerHTML = html;
+}
 
 function fillWardSelect() {
     var sel = document.getElementById('wardSelect');
@@ -365,6 +391,14 @@ function fillWardSelect() {
         html += '<option value="' + seed.wards[i] + '">' + seed.wards[i] + '</option>';
     }
     sel.innerHTML = html;
+}
+function reviewAction(id, decision) {
+    for (var i = 0; i < seed.reviewQuestions.length; i++) {
+        if (seed.reviewQuestions[i].id === id) {
+            seed.reviewQuestions[i].status = decision;
+        }
+    }
+    buildReviewList();
 }
 allVisits = generateVisits();
 shownVisits = allVisits;
@@ -377,3 +411,4 @@ buildCoverageChart();
 buildFunnelChart();
 buildMap();
 buildCbdTable();
+buildReviewList();

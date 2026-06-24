@@ -52,5 +52,12 @@ var seed = {
         'nuhu.maina.mun.campaigner': 'Nuhu Maina',
         'saratu.dauda.dandango.campaigner': 'Saratu Dauda',
         'kabiru.audu.kundum.campaigner': 'Kabiru Audu'
-    }
+    },
+    reviewQuestions: [
+        { id: 1, q: 'Idan yaron yana da zazzabi tare da gudawa fa?', cbd: 'Aisha Bello', settlement: 'Makama', date: '2026-02-18', status: 'pending' },
+        { id: 2, q: 'Za a iya hada ORS da ruwan famfo?', cbd: 'Musa Ibrahim', settlement: 'Gwallaga', date: '2026-02-21', status: 'pending' },
+        { id: 3, q: 'Sau nawa zan iya bayar da zinc a rana?', cbd: 'Fatima Sani', settlement: 'Galambi', date: '2026-03-02', status: 'pending' },
+        { id: 4, q: 'Me zan yi idan yaron ya ki shan ORS?', cbd: 'Ahmad Nasir', settlement: 'Dorawar Dillalai', date: '2026-03-05', status: 'pending' },
+        { id: 5, q: 'Shin ana iya bayar da maganin gargajiya tare da ORS?', cbd: 'Sani Yusuf', settlement: 'Miri', date: '2026-03-08', status: 'pending' }
+    ]
 };
