@@ -1,5 +1,11 @@
 var allVisits = [];
 var shownVisits = [];
+var sortedCbds = [];
+function showCbdDetail(index) {
+    var c = sortedCbds[index];
+    alert(c.name + ' — ' + c.ward + '\n' +
+          c.counselled + ' counselled, ' + c.referred + ' referred');
+}
 function generateVisits() {
     var cbds = [
         'ahmad.nasir.bau.campaigner',
@@ -30,6 +36,31 @@ function generateVisits() {
         }
     }
     return visits;
+}
+function generateCbds() {
+    var firstNames = ['Ahmad','Musa','Aisha','Fatima','Sani','Ibrahim','Hauwa','Yusuf',
+                      'Zainab','Bello','Maryam','Usman','Halima','Sadiq','Amina','Garba',
+                      'Rakiya','Nuhu','Saratu','Kabiru','Hadiza','Idris'];
+    var lastNames = ['Nasir','Ibrahim','Bello','Sani','Yusuf','Abubakar','Sule','Lawan',
+                     'Adamu','Haruna','Tanko','Danjuma','Aliyu','Shehu','Bala','Umar',
+                     'Gambo','Iliya','Maina','Dauda','Audu','Jibril'];
+    var cbds = [];
+    for (var i = 0; i < 22; i++) {
+        var ward = seed.wards[i % seed.wards.length];
+        var counselled = Math.floor(Math.random() * 180) + 40;
+        var children = counselled + Math.floor(Math.random() * 90);
+        var referred = Math.floor(Math.random() * 18);
+        var lastDays = Math.floor(Math.random() * 14);
+        cbds.push({
+            name: firstNames[i] + ' ' + lastNames[i],
+            ward: ward,
+            counselled: counselled,
+            children: children,
+            referred: referred,
+            lastActive: lastDays
+        });
+    }
+    return cbds;
 }
 function buildStatCards() {
     var cards = [
@@ -152,18 +183,61 @@ function refreshPanels() {
 
 function updateStatsFromShown() {
     var counselled = 0, referred = 0;
+    var cbdSet = {};
     for (var i = 0; i < shownVisits.length; i++) {
-        if (shownVisits[i].type === 'referral') { referred++; }
+        var v = shownVisits[i];
+        if (v.type === 'referral') { referred++; }
         else { counselled++; }
+        cbdSet[v.cbd] = true;
     }
-    document.getElementById('filterStatus').textContent +=
-        '  (' + shownVisits.length + ' visits: ' + counselled + ' counselled, ' + referred + ' referred)';
+    var activeCbds = Object.keys(cbdSet).length;
+
+    var row = document.getElementById('statRow');
+    row.innerHTML =
+        statCardHtml(counselled, 'Caregivers counselled', 'teal') +
+        statCardHtml(shownVisits.length, 'Visits in period', 'teal') +
+        statCardHtml(referred, 'Referrals made', 'amber') +
+        statCardHtml(activeCbds, 'Active CBDs', 'teal');
+}
+
+function statCardHtml(value, label, accent) {
+    return '<div class="statCard ' + accent + '">' +
+        '<div class="statValue">' + value.toLocaleString() + '</div>' +
+        '<div class="statLabel">' + label + '</div></div>';
+}
+function buildCbdTable() {
+    var cbds = allCbds.slice();
+    cbds.sort(function(a, b) { return b.counselled - a.counselled; });
+
+    var html = '<table class="cbdTable"><thead><tr>' +
+        '<th>CBD</th><th>Ward</th><th>Counselled</th>' +
+        '<th>Children</th><th>Referred</th><th>Last active</th>' +
+        '</tr></thead><tbody>';
+
+    for (var i = 0; i < cbds.length; i++) {
+        var c = cbds[i];
+        var last = (c.lastActive === 0) ? 'Today' : c.lastActive + ' days ago';
+        var stale = (c.lastActive > 7) ? ' class="stale"' : '';
+        html += '<tr onclick="showCbdDetail(' + i + ')"' + stale + '>' +
+            '<td>' + c.name + '</td>' +
+            '<td>' + c.ward + '</td>' +
+            '<td>' + c.counselled + '</td>' +
+            '<td>' + c.children + '</td>' +
+            '<td>' + c.referred + '</td>' +
+            '<td>' + last + '</td></tr>';
+    }
+    html += '</tbody></table>';
+    document.getElementById('cbdTable').innerHTML = html;
+
+    sortedCbds = cbds;
 }
 allVisits = generateVisits();
 shownVisits = allVisits;
+var allCbds = generateCbds();
 
-buildStatCards();
+updateStatsFromShown();
 buildReferralCallout();
 buildCoverageChart();
 buildFunnelChart();
 buildMap();
+buildCbdTable();

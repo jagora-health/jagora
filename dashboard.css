@@ -102,3 +102,16 @@ body {
     padding: 7px 10px;
 }
 .filterStatus { color: #0f766e; font-weight: 600; margin-left: 8px; }
+.tableSection { padding: 0 24px 20px; }
+.cbdTable { width: 100%; border-collapse: collapse; }
+.cbdTable th, .cbdTable td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 0.9em;
+}
+.cbdTable th { color: #64748b; font-weight: 600; }
+.cbdTable tbody tr { cursor: pointer; }
+.cbdTable tbody tr:hover { background: #f0fdfa; }
+.cbdTable tr.stale { background: #fef2f2; }
+.cbdTable tr.stale:hover { background: #fee2e2; }
