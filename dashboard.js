@@ -1,7 +1,7 @@
 var allVisits = [];
 var shownVisits = [];
 var sortedCbds = [];
-var sortColumn = 'lastActive';
+var sortColumn = 'counselled';
 var sortAsc = false;
 var wardFilter = 'all';
 function countBy(visits, dimension, field) {
@@ -252,6 +252,7 @@ function refreshPanels() {
     updateStatsFromShown();
     buildCoverageChart();
     buildFunnelChart();
+    buildCbdTable();
 }
 
 function updateStatsFromShown() {
@@ -279,7 +280,23 @@ function statCardHtml(value, label, accent) {
         '<div class="statLabel">' + label + '</div></div>';
 }
 function buildCbdTable() {
-    var cbds = allCbds.slice();
+    var stats = {};
+    for (var i = 0; i < shownVisits.length; i++) {
+        var v = shownVisits[i];
+        if (!stats[v.cbd]) {
+            stats[v.cbd] = { cbd: v.cbd, ward: v.ward, counselled: 0, children: 0, referred: 0 };
+        }
+        if (v.type === 'referral') { stats[v.cbd].referred++; }
+        else { stats[v.cbd].counselled++; }
+        stats[v.cbd].children += v.children;
+    }
+
+    var cbds = [];
+    for (var key in stats) {
+        var s = stats[key];
+        s.name = seed.cbdNames[key] || key;
+        cbds.push(s);
+    }
 
     if (wardFilter !== 'all') {
         cbds = cbds.filter(function(c) { return c.ward === wardFilter; });
@@ -298,8 +315,7 @@ function buildCbdTable() {
         { key: 'ward', label: 'Ward' },
         { key: 'counselled', label: 'Counselled' },
         { key: 'children', label: 'Children' },
-        { key: 'referred', label: 'Referred' },
-        { key: 'lastActive', label: 'Last active' }
+        { key: 'referred', label: 'Referred' }
     ];
 
     var html = '<table class="cbdTable"><thead><tr>';
@@ -311,13 +327,10 @@ function buildCbdTable() {
 
     for (var i = 0; i < cbds.length; i++) {
         var c = cbds[i];
-        var last = (c.lastActive === 0) ? 'Today' :
-                   c.lastActive + (c.lastActive === 1 ? ' day ago' : ' days ago');
-        var stale = (c.lastActive > 7) ? ' class="stale"' : '';
-        html += '<tr onclick="showCbdDetail(' + i + ')"' + stale + '>' +
+        html += '<tr onclick="showCbdDetail(' + i + ')">' +
             '<td>' + c.name + '</td><td>' + c.ward + '</td>' +
             '<td>' + c.counselled + '</td><td>' + c.children + '</td>' +
-            '<td>' + c.referred + '</td><td>' + last + '</td></tr>';
+            '<td>' + c.referred + '</td></tr>';
     }
     html += '</tbody></table>';
     document.getElementById('cbdTable').innerHTML = html;
@@ -341,6 +354,7 @@ function setWardFilter() {
 
 function fillWardSelect() {
     var sel = document.getElementById('wardSelect');
+    if (!sel) { return; }
     var html = '<option value="all">All wards</option>';
     for (var i = 0; i < seed.wards.length; i++) {
         html += '<option value="' + seed.wards[i] + '">' + seed.wards[i] + '</option>';
@@ -351,6 +365,7 @@ allVisits = generateVisits();
 shownVisits = allVisits;
 var allCbds = generateCbds();
 
+fillWardSelect();
 updateStatsFromShown();
 buildReferralCallout();
 buildCoverageChart();

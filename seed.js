@@ -30,5 +30,12 @@ var seed = {
         { name: 'Gwallameji', lat: 10.2701, lng: 9.8312 },
         { name: 'Kobi', lat: 10.3067, lng: 9.8389 },
         { name: 'Dandango', lat: 10.3201, lng: 9.8556 }
-    ]
+    ],
+    cbdNames: {
+        'ahmad.nasir.bau.campaigner': 'Ahmad Nasir',
+        'musa.ibrahim.makama.campaigner': 'Musa Ibrahim',
+        'sani.yusuf.birshi.campaigner': 'Sani Yusuf',
+        'aisha.bello.zungur.campaigner': 'Aisha Bello',
+        'fatima.sani.galambi.campaigner': 'Fatima Sani'
+    }
 };
