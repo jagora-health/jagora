@@ -193,3 +193,8 @@ body {
     padding: 7px 16px; border-radius: 8px; cursor: pointer;
 }
 .pipelineNote { color: #065f46; font-weight: 600; font-size: 0.9em; }
+.signout {
+    cursor: pointer;
+    text-decoration: underline;
+}
+.signout:hover { opacity: 0.8; }

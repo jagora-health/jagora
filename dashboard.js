@@ -21,8 +21,13 @@ function showRoleLabel() {
         'admin': 'Administrator'
     };
     var label = roleNames[currentRole] || currentRole;
-    document.getElementById('roleLabel').textContent =
-        label + ' · ' + currentScope + '  |  Sign out';
+    document.getElementById('roleLabel').innerHTML =
+        label + ' · ' + currentScope +
+        '  |  <span class="signout" onclick="signOut()">Sign out</span>';
+}
+
+function signOut() {
+    window.location.href = 'index.html';
 }
 
 function countBy(visits, dimension, field) {
