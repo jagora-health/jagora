@@ -7,7 +7,14 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="welcome">
+    <div id="login">
+        <h1>Jagora</h1>
+        <p>Sign in to continue</p>
+        <input id="loginUsername" placeholder="Enter your username" autocomplete="off">
+        <p id="loginError" style="color:#dc2626;"></p>
+        <button onclick="doLogin()">Sign in</button>
+    </div>
+    <div id="welcome" class="hidden">
         <h1>Jagora</h1>
         <p>The counselling companion</p>
         <button onclick="startVisit()">Start a visit</button>
@@ -120,6 +127,32 @@
     }
 ];
 
+var currentUser = '';
+
+function doLogin() {
+    var username = document.getElementById('loginUsername').value.trim().toLowerCase();
+    var validUsers = [
+        'ahmad.nasir.bau.campaigner',
+        'aisha.bello.zungur.ward_lead',
+        'musa.ibrahim.bauchi.lga_lead',
+        'sani.yusuf.bauchi.state_team',
+        'admin.jagora.system.admin'
+    ];
+
+    if (validUsers.indexOf(username) === -1) {
+        document.getElementById('loginError').textContent = 'Username not recognised.';
+        return;
+    }
+
+    currentUser = username;
+    var role = username.split('.').pop();
+
+    if (role === 'campaigner') {
+        showScreen('welcome');
+    } else {
+        window.location.href = 'dashboard.html?user=' + username;
+    }
+}
 function buildFaqList() {
     var container = document.getElementById('faqList');
     container.innerHTML = '';
@@ -138,7 +171,7 @@ function buildFaqList() {
     }
 }
         function showScreen(id) {
-            var screens = ['welcome', 'visit', 'confirm','sickNow','child', 'refer','childDone','caregiverDone','counsel','faq'];
+           var screens = ['login', 'welcome', 'visit', 'confirm','sickNow','child', 'refer','childDone','caregiverDone','counsel','faq'];
             for (var i = 0; i < screens.length; i++) {
                 document.getElementById(screens[i]).classList.add('hidden');
             }
