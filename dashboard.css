@@ -115,3 +115,40 @@ body {
 .cbdTable tbody tr:hover { background: #f0fdfa; }
 .cbdTable tr.stale { background: #fef2f2; }
 .cbdTable tr.stale:hover { background: #fee2e2; }
+.overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+.overlay.hidden { display: none; }
+.overlayCard {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    max-width: 480px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+}
+.closeBtn {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: none; border: none;
+    font-size: 1.2em; cursor: pointer;
+    color: #64748b;
+}
+.overlayCard h2 { margin: 0 0 4px; }
+.detailWard { color: #64748b; margin: 0 0 16px; }
+.detailStats { display: flex; gap: 12px; margin-bottom: 16px; }
+.detailStatBox {
+    flex: 1; background: #f0fdfa; border-radius: 10px;
+    padding: 14px; text-align: center;
+}
+.detailStatValue { font-size: 1.6em; font-weight: 700; color: #0f766e; }
+.detailStatLabel { font-size: 0.8em; color: #64748b; }
+.overlayCard h3 { font-size: 0.95em; color: #334155; margin: 16px 0 6px; }

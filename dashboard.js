@@ -3,8 +3,49 @@ var shownVisits = [];
 var sortedCbds = [];
 function showCbdDetail(index) {
     var c = sortedCbds[index];
-    alert(c.name + ' — ' + c.ward + '\n' +
-          c.counselled + ' counselled, ' + c.referred + ' referred');
+    var last = (c.lastActive === 0) ? 'Today' :
+               c.lastActive + (c.lastActive === 1 ? ' day ago' : ' days ago');
+
+    var html =
+        '<h2>' + c.name + '</h2>' +
+        '<p class="detailWard">' + c.ward + ' ward, Bauchi</p>' +
+        '<div class="detailStats">' +
+            detailStat(c.counselled, 'Counselled') +
+            detailStat(c.children, 'Children') +
+            detailStat(c.referred, 'Referred') +
+        '</div>' +
+        '<p class="detailMeta">Last active: ' + last + '</p>' +
+        '<h3>Settlements covered</h3>' +
+        '<p>' + cbdSettlements(c) + '</p>' +
+        '<h3>Questions recorded</h3>' +
+        '<p>' + cbdQuestions(c) + '</p>';
+
+    document.getElementById('cbdDetailContent').innerHTML = html;
+    document.getElementById('cbdDetail').classList.remove('hidden');
+}
+
+function detailStat(value, label) {
+    return '<div class="detailStatBox"><div class="detailStatValue">' + value +
+           '</div><div class="detailStatLabel">' + label + '</div></div>';
+}
+
+function cbdSettlements(c) {
+    var pool = ['Majidadi', 'Gwallaga', 'Miri', 'Zungur', 'Dorawar Dillalai', 'Yelwa', 'Galambi'];
+    var n = Math.floor(Math.random() * 3) + 2;
+    var picked = [];
+    for (var i = 0; i < n; i++) {
+        picked.push(pool[Math.floor(Math.random() * pool.length)]);
+    }
+    return picked.join(', ');
+}
+
+function cbdQuestions(c) {
+    if (c.referred < 5) { return 'No questions recorded this period.'; }
+    return '“Za a iya bayar da shi tare da nonon uwa?” — pending review';
+}
+
+function closeCbdDetail() {
+    document.getElementById('cbdDetail').classList.add('hidden');
 }
 function generateVisits() {
     var cbds = [
