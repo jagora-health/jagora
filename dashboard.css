@@ -152,3 +152,12 @@ body {
 .detailStatValue { font-size: 1.6em; font-weight: 700; color: #0f766e; }
 .detailStatLabel { font-size: 0.8em; color: #64748b; }
 .overlayCard h3 { font-size: 0.95em; color: #334155; margin: 16px 0 6px; }
+.tableControls { margin-bottom: 12px; }
+.tableControls select {
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 7px 10px;
+    margin-left: 6px;
+}
+.cbdTable th { cursor: pointer; user-select: none; }
+.cbdTable th:hover { color: #0f766e; }

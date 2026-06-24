@@ -1,6 +1,18 @@
 var allVisits = [];
 var shownVisits = [];
 var sortedCbds = [];
+var sortColumn = 'lastActive';
+var sortAsc = false;
+var wardFilter = 'all';
+function countBy(visits, dimension, field) {
+    var result = {};
+    for (var i = 0; i < visits.length; i++) {
+        var key = visits[i][dimension];
+        if (!result[key]) { result[key] = 0; }
+        result[key] += (field ? visits[i][field] : 1);
+    }
+    return result;
+}
 function showCbdDetail(index) {
     var c = sortedCbds[index];
     var last = (c.lastActive === 0) ? 'Today' :
@@ -68,9 +80,12 @@ function generateVisits() {
             var dayStr = (day < 10) ? '0' + day : '' + day;
             visits.push({
                 settlement: s.name,
+                ward: seed.wards[i % seed.wards.length],
+                lga: 'Bauchi',
                 lat: s.lat + jitterLat,
                 lng: s.lng + jitterLng,
                 type: isReferral ? 'referral' : 'counselled',
+                children: Math.floor(Math.random() * 3) + 1,
                 cbd: cbds[Math.floor(Math.random() * cbds.length)],
                 date: month + '-' + dayStr
             });
@@ -248,29 +263,72 @@ function statCardHtml(value, label, accent) {
 }
 function buildCbdTable() {
     var cbds = allCbds.slice();
-    cbds.sort(function(a, b) { return b.counselled - a.counselled; });
 
-    var html = '<table class="cbdTable"><thead><tr>' +
-        '<th>CBD</th><th>Ward</th><th>Counselled</th>' +
-        '<th>Children</th><th>Referred</th><th>Last active</th>' +
-        '</tr></thead><tbody>';
+    if (wardFilter !== 'all') {
+        cbds = cbds.filter(function(c) { return c.ward === wardFilter; });
+    }
+
+    cbds.sort(function(a, b) {
+        var av = a[sortColumn], bv = b[sortColumn];
+        if (typeof av === 'string') {
+            return sortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
+        }
+        return sortAsc ? av - bv : bv - av;
+    });
+
+    var cols = [
+        { key: 'name', label: 'CBD' },
+        { key: 'ward', label: 'Ward' },
+        { key: 'counselled', label: 'Counselled' },
+        { key: 'children', label: 'Children' },
+        { key: 'referred', label: 'Referred' },
+        { key: 'lastActive', label: 'Last active' }
+    ];
+
+    var html = '<table class="cbdTable"><thead><tr>';
+    for (var h = 0; h < cols.length; h++) {
+        var arrow = (sortColumn === cols[h].key) ? (sortAsc ? ' ▲' : ' ▼') : '';
+        html += '<th onclick="sortBy(\'' + cols[h].key + '\')">' + cols[h].label + arrow + '</th>';
+    }
+    html += '</tr></thead><tbody>';
 
     for (var i = 0; i < cbds.length; i++) {
         var c = cbds[i];
-        var last = (c.lastActive === 0) ? 'Today' : c.lastActive + ' days ago';
+        var last = (c.lastActive === 0) ? 'Today' :
+                   c.lastActive + (c.lastActive === 1 ? ' day ago' : ' days ago');
         var stale = (c.lastActive > 7) ? ' class="stale"' : '';
         html += '<tr onclick="showCbdDetail(' + i + ')"' + stale + '>' +
-            '<td>' + c.name + '</td>' +
-            '<td>' + c.ward + '</td>' +
-            '<td>' + c.counselled + '</td>' +
-            '<td>' + c.children + '</td>' +
-            '<td>' + c.referred + '</td>' +
-            '<td>' + last + '</td></tr>';
+            '<td>' + c.name + '</td><td>' + c.ward + '</td>' +
+            '<td>' + c.counselled + '</td><td>' + c.children + '</td>' +
+            '<td>' + c.referred + '</td><td>' + last + '</td></tr>';
     }
     html += '</tbody></table>';
     document.getElementById('cbdTable').innerHTML = html;
 
     sortedCbds = cbds;
+}
+function sortBy(column) {
+    if (sortColumn === column) {
+        sortAsc = !sortAsc;
+    } else {
+        sortColumn = column;
+        sortAsc = false;
+    }
+    buildCbdTable();
+}
+
+function setWardFilter() {
+    wardFilter = document.getElementById('wardSelect').value;
+    buildCbdTable();
+}
+
+function fillWardSelect() {
+    var sel = document.getElementById('wardSelect');
+    var html = '<option value="all">All wards</option>';
+    for (var i = 0; i < seed.wards.length; i++) {
+        html += '<option value="' + seed.wards[i] + '">' + seed.wards[i] + '</option>';
+    }
+    sel.innerHTML = html;
 }
 allVisits = generateVisits();
 shownVisits = allVisits;
