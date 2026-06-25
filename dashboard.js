@@ -452,5 +452,9 @@ buildCoverageChart();
 buildFunnelChart();
 buildMap();
 buildCbdTable();
-buildReviewList();
+if (currentRole === 'admin') {
+    buildReviewList();
+} else {
+    document.querySelector('.reviewSection').style.display = 'none';
+}
 showRoleLabel();
