@@ -191,15 +191,16 @@ function buildReferralCallout() {
 var coverageChartObj;
 
 function buildCoverageChart() {
-    var counts = countBy(shownVisits, 'ward');
-    var labels = seed.wards;
+    var dimension = (currentRole === 'state_team' || currentRole === 'admin') ? 'lga' : 'ward';
+    var counts = countBy(shownVisits, dimension);
+
+    var labels = Object.keys(counts);
     var data = [];
     for (var i = 0; i < labels.length; i++) {
-        data.push(counts[labels[i]] || 0);
+        data.push(counts[labels[i]]);
     }
 
     if (coverageChartObj) { coverageChartObj.destroy(); }
-
     coverageChartObj = new Chart(document.getElementById('coverageChart'), {
         type: 'bar',
         data: {
