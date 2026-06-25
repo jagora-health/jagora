@@ -48,4 +48,13 @@ button:active { transform: scale(0.98); }
   margin-top: 16px;
 }
 
-.hidden { display: none; }S,
+.hidden { display: none; }
+.helperLink {
+    font-size: 15px;
+    color: #fde68a;
+    text-decoration: underline;
+    cursor: pointer;
+    max-width: 320px;
+    margin: 4px auto 18px;
+}
+.helperEn { font-size: 13px; opacity: 0.75; }

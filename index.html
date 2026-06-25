@@ -45,9 +45,23 @@
     <div id="child" class="hidden">
     <h1>Child check</h1>
     <p>Does the child have any danger signs?</p>
-    <button onclick="alert('Danger-sign video/pictures coming soon')">Show danger signs</button>
+    <p class="helperLink" onclick="showDangerSigns()">Ba ka da tabbas? Dubi alamomin haɗari →<br><span class="helperEn">Not sure? See the danger signs</span></p>
     <button onclick="answerDanger(true)">Yes</button>
     <button onclick="answerDanger(false)">No</button>
+</div>
+
+<div id="dangerSigns" class="hidden">
+    <h1>Alamomin haɗari</h1>
+    <p>Danger signs — refer immediately if you see any</p>
+    <img src="media/danger-signs.jpg" alt="Danger signs" style="width:100%;max-width:360px;border-radius:10px;margin:10px 0;">
+    <ol style="text-align:left;max-width:360px;margin:0 auto 16px;font-size:16px;">
+        <li>Bayan gida da jini — Blood in stool</li>
+        <li>Yawan amai — Vomiting everything</li>
+        <li>Rashin shan nono ko ruwa — Can't drink/feed</li>
+        <li>Yawan barci ko suma — Very sleepy/unconscious</li>
+        <li>Rashin sauƙi kwana 3 — No improvement in 3 days</li>
+    </ol>
+    <button onclick="showScreen('child')">← Back</button>
 </div>
 
     <div id="refer" class="hidden">
@@ -171,7 +185,7 @@ function buildFaqList() {
     }
 }
         function showScreen(id) {
-           var screens = ['login', 'welcome', 'visit', 'confirm','sickNow','child', 'refer','childDone','caregiverDone','counsel','faq'];
+           var screens = ['login', 'welcome', 'visit', 'confirm','sickNow','child','dangerSigns','refer','childDone','caregiverDone','counsel','faq'];
             for (var i = 0; i < screens.length; i++) {
                 document.getElementById(screens[i]).classList.add('hidden');
             }
@@ -197,6 +211,9 @@ function buildFaqList() {
     showScreen('visit');
 }
 
+function showDangerSigns() {
+    showScreen('dangerSigns');
+}
 
         function updatePreview() {
             var ward = 'DUL';
