@@ -13,6 +13,20 @@ var currentUser = getLoggedInUser();
 var currentRole = currentUser.split('.').pop();
 var currentScope = currentUser.split('.')[2];
 
+function scopeVisits(visits) {
+    if (currentRole === 'ward_lead') {
+        return visits.filter(function(v) {
+            return v.ward.toLowerCase().indexOf(currentScope) === 0;
+        });
+    }
+    if (currentRole === 'lga_lead') {
+        return visits.filter(function(v) {
+            return v.lga.toLowerCase() === currentScope;
+        });
+    }
+    return visits; // state_team and admin see everything
+}
+
 function showRoleLabel() {
     var roleNames = {
         'ward_lead': 'Ward Lead',
@@ -426,7 +440,7 @@ function reviewAction(id, decision) {
     }
     buildReviewList();
 }
-allVisits = generateVisits();
+allVisits = scopeVisits(generateVisits());
 shownVisits = allVisits;
 var allCbds = generateCbds();
 
