@@ -4,6 +4,7 @@ var sortedCbds = [];
 var sortColumn = 'counselled';
 var sortAsc = false;
 var wardFilter = 'all';
+var drillLga = null;
 function getLoggedInUser() {
     var params = new URLSearchParams(window.location.search);
     return params.get('user') || 'sani.yusuf.bauchi.state_team';
@@ -191,9 +192,16 @@ function buildReferralCallout() {
 var coverageChartObj;
 
 function buildCoverageChart() {
-    var dimension = (currentRole === 'state_team' || currentRole === 'admin') ? 'lga' : 'ward';
-    var counts = countBy(shownVisits, dimension);
+    var dimension;
+    if (drillLga) {
+        dimension = 'ward';
+    } else if (currentRole === 'state_team' || currentRole === 'admin') {
+        dimension = 'lga';
+    } else {
+        dimension = 'ward';
+    }
 
+    var counts = countBy(shownVisits, dimension);
     var labels = Object.keys(counts);
     var data = [];
     for (var i = 0; i < labels.length; i++) {
@@ -207,10 +215,18 @@ function buildCoverageChart() {
             labels: labels,
             datasets: [{ label: 'Visits', data: data, backgroundColor: '#0f766e' }]
         },
-        options: { indexAxis: 'y', plugins: { legend: { display: false } } }
+        options: {
+            indexAxis: 'y',
+            plugins: { legend: { display: false } },
+            onClick: function(event, elements) {
+                if (elements.length > 0 && dimension === 'lga') {
+                    var clickedLabel = labels[elements[0].index];
+                    drillInto(clickedLabel);
+                }
+            }
+        }
     });
 }
-
 var funnelChartObj;
 
 function buildFunnelChart() {
@@ -441,6 +457,29 @@ function reviewAction(id, decision) {
     }
     buildReviewList();
 }
+
+function drillInto(lga) {
+    drillLga = lga;
+    shownVisits = scopeVisits(generateVisits()).filter(function(v) {
+        return v.lga === lga;
+    });
+    document.getElementById('drillBar').style.display = 'block';
+    document.getElementById('drillLabel').textContent = 'Viewing: ' + lga + ' LGA';
+    refreshPanels();
+    buildCoverageChart();
+}
+
+function drillOut() {
+    drillLga = null;
+    shownVisits = allVisits;
+    document.getElementById('drillBar').style.display = 'none';
+    refreshPanels();
+    buildCoverageChart();
+}
+
+
+
+
 allVisits = scopeVisits(generateVisits());
 shownVisits = allVisits;
 var allCbds = generateCbds();
