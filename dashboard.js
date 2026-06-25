@@ -112,7 +112,7 @@ function generateVisits() {
             visits.push({
                 settlement: s.name,
                 ward: seed.wards[i % seed.wards.length],
-                lga: 'Bauchi',
+                lga: (i < 6) ? 'Bauchi' : 'Toro',
                 lat: s.lat + jitterLat,
                 lng: s.lng + jitterLng,
                 type: isReferral ? 'referral' : 'counselled',
