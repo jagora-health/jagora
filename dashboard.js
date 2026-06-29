@@ -79,11 +79,10 @@ function detailStat(value, label) {
 }
 
 function cbdHouseholds(c) {
-    // demo: generate sample household IDs; at pilot these are the real synced IDs
     var settlements = ['MAJ', 'GWA', 'MIR', 'ZUN', 'DOR'];
     var counselledIds = [];
     var referredIds = [];
-    var total = Math.min(c.counselled, 6); // show up to 6 for demo
+    var total = Math.min(c.counselled, 6);
     for (var i = 0; i < total; i++) {
         var s = settlements[Math.floor(Math.random() * settlements.length)];
         var num = (100 + Math.floor(Math.random() * 800));
@@ -95,14 +94,19 @@ function cbdHouseholds(c) {
         '<div class="hhCounts">' +
             '<b>' + c.counselled + '</b> counselled · <b>' + c.referred + '</b> referred' +
         '</div>' +
-        '<button class="hhToggle" onclick="this.nextElementSibling.classList.toggle(\'hidden\')">Show household IDs ▾</button>' +
-        '<div class="hidden hhList">' +
+        '<button class="hhToggle" onclick="toggleHhList()">Show household IDs ▾</button>' +
+        '<div id="hhList" style="display:none;margin-top:8px;">' +
             '<p style="margin:6px 0 2px;font-weight:600;">Counselled:</p>' +
             '<p style="font-size:0.85em;color:#475569;">' + (counselledIds.join('<br>') || 'None') + '</p>' +
             '<p style="margin:8px 0 2px;font-weight:600;">Referred:</p>' +
             '<p style="font-size:0.85em;color:#b45309;">' + (referredIds.join('<br>') || 'None') + '</p>' +
         '</div>';
     return html;
+}
+
+function toggleHhList() {
+    var el = document.getElementById('hhList');
+    el.style.display = (el.style.display === 'none') ? 'block' : 'none';
 }
 
 function cbdSettlements(c) {

@@ -19,6 +19,7 @@
         <h1>Jagora</h1>
         <p>The counselling companion</p>
         <button onclick="tryStartVisit()">Start a visit</button>
+        <button class="backBtn" onclick="logout()">Logout</button>
     </div>
 
     <div id="visit" class="hidden">
@@ -195,6 +196,7 @@ function doLogin() {
 
     currentUser = username;
     cbdUsername = currentUser;
+    localStorage.setItem('jagora_user', currentUser);
     var role = username.split('.').pop();
 
     if (role === 'campaigner') {
@@ -243,6 +245,25 @@ function buildFaqList() {
         container.appendChild(block);
     }
 }
+function saveVisits() {
+    localStorage.setItem('jagora_visits', JSON.stringify(visits));
+}
+
+function logout() {
+    if (visitInProgress && caregivers.length > 0) {
+        var ok = confirm('You have an unfinished household. Logging out will discard it. Continue?');
+        if (!ok) { return; }
+    }
+    caregivers = [];
+    questions = [];
+    videoPlayed = false;
+    visitInProgress = false;
+    currentUser = '';
+    document.getElementById('loginUsername').value = '';
+    showScreen('login');
+    localStorage.removeItem('jagora_user');
+}
+
 
 function goForward() {
     // gate only at the frontier
@@ -304,9 +325,15 @@ function saveCounts() {
 function updateProgress() {
     var bar = document.getElementById('progressBar');
     bar.classList.remove('hidden');
-    // human-friendly count: step 1 of N (skip referReminder in the count if not referring)
-    var totalShown = flowSteps.length;
-    bar.textContent = 'Step ' + (currentStep + 1) + ' of ' + totalShown;
+    var names = {
+        'visit': 'Household ID',
+        'counts': 'Children',
+        'referReminder': 'Refer',
+        'caregiverDone': 'Next caregiver',
+        'counsel': 'Counsel'
+    };
+    var screenId = flowSteps[currentStep];
+    bar.textContent = 'Step ' + (currentStep + 1) + ' of ' + flowSteps.length + ' · ' + names[screenId];
 }
 
 
@@ -555,6 +582,7 @@ function startAnotherCaregiver() {
         questions: questions.slice()
     };
     visits.push(visit);
+    saveVisits();
 
     var childCount = 0;
     var referredCount = 0;
@@ -583,6 +611,14 @@ function startAnotherCaregiver() {
     document.getElementById('diarrhoeaCount').value = '';
     document.getElementById('referCount').value = '';
     showScreen('welcome');
+}
+var savedVisits = localStorage.getItem('jagora_visits');
+if (savedVisits) {
+    visits = JSON.parse(savedVisits);
+}
+var savedUser = localStorage.getItem('jagora_user');
+if (savedUser) {
+    document.getElementById('loginUsername').value = savedUser;
 }
     </script>
 </body>
