@@ -1,23 +1,31 @@
 * { box-sizing: border-box; }
 
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   font-family: sans-serif;
   background-color: #0f766e;
   color: white;
   margin: 0;
-  padding: 40px 20px;
+  padding: 32px 16px;
   min-height: 100vh;
   text-align: center;
 }
 
-h1 { font-size: 30px; margin-bottom: 6px; }
+h1 { font-size: 32px; margin-bottom: 6px; }
 
-p { font-size: 18px; margin-top: 0; }
+p { font-size: 19px; margin-top: 0; }
 
 input {
-  padding: 16px;
-  margin: 6px;
-  font-size: 18px;
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  margin: 8px auto;
+  padding: 18px;
+  font-size: 20px;
   border: none;
   border-radius: 10px;
   text-align: center;
@@ -26,35 +34,81 @@ input {
 button {
   display: block;
   width: 100%;
-  max-width: 320px;
+  max-width: 340px;
+  min-height: 56px;
   margin: 14px auto;
   padding: 18px;
-  font-size: 18px;
+  font-size: 19px;
   font-weight: bold;
   color: #0f766e;
   background-color: white;
   border: none;
   border-radius: 12px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
 }
 
 button:active { transform: scale(0.98); }
 
 #preview {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: bold;
   letter-spacing: 1px;
   margin-top: 16px;
+  word-break: break-all;
 }
 
-.hidden { display: none; }
 .helperLink {
-    font-size: 15px;
-    color: #fde68a;
-    text-decoration: underline;
-    cursor: pointer;
-    max-width: 320px;
-    margin: 4px auto 18px;
+  font-size: 15px;
+  color: #fde68a;
+  text-decoration: underline;
+  cursor: pointer;
+  max-width: 320px;
+  margin: 4px auto 18px;
 }
 .helperEn { font-size: 13px; opacity: 0.75; }
+
+.hidden { display: none; }
+
+.progressBar {
+  max-width: 340px;
+  margin: 0 auto 18px;
+  font-size: 15px;
+  font-weight: bold;
+  opacity: 0.9;
+  letter-spacing: 0.5px;
+}
+.countLabel {
+  display: block;
+  max-width: 320px;
+  margin: 14px auto 4px;
+  font-size: 16px;
+  text-align: left;
+}
+.countInput {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+  padding: 18px;
+  font-size: 22px;
+  border: none;
+  border-radius: 10px;
+  text-align: center;
+}
+.navRow {
+  display: flex;
+  gap: 10px;
+  max-width: 340px;
+  margin: 20px auto 0;
+}
+.navRow button { margin: 0; }
+.backBtn {
+  background: transparent;
+  color: white;
+  border: 2px solid rgba(255,255,255,0.6);
+  box-shadow: none;
+  flex: 0 0 38%;
+}
+.referNote { font-size: 16px; opacity: 0.9; max-width: 320px; margin: 8px auto; }
+#referReminderText { font-size: 22px; font-weight: bold; }
