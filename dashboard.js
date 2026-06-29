@@ -15,11 +15,6 @@ var currentRole = currentUser.split('.').pop();
 var currentScope = currentUser.split('.')[2];
 
 function scopeVisits(visits) {
-    if (currentRole === 'ward_lead') {
-        return visits.filter(function(v) {
-            return v.ward.toLowerCase().indexOf(currentScope) === 0;
-        });
-    }
     if (currentRole === 'lga_lead') {
         return visits.filter(function(v) {
             return v.lga.toLowerCase() === currentScope;
@@ -30,7 +25,6 @@ function scopeVisits(visits) {
 
 function showRoleLabel() {
     var roleNames = {
-        'ward_lead': 'Ward Lead',
         'lga_lead': 'LGA Lead',
         'state_team': 'State Team',
         'admin': 'Administrator'
@@ -70,6 +64,8 @@ function showCbdDetail(index) {
         '<p class="detailMeta">Last active: ' + last + '</p>' +
         '<h3>Settlements covered</h3>' +
         '<p>' + cbdSettlements(c) + '</p>' +
+        '<h3>Households covered</h3>' +
+        cbdHouseholds(c) +
         '<h3>Questions recorded</h3>' +
         '<p>' + cbdQuestions(c) + '</p>';
 
@@ -80,6 +76,33 @@ function showCbdDetail(index) {
 function detailStat(value, label) {
     return '<div class="detailStatBox"><div class="detailStatValue">' + value +
            '</div><div class="detailStatLabel">' + label + '</div></div>';
+}
+
+function cbdHouseholds(c) {
+    // demo: generate sample household IDs; at pilot these are the real synced IDs
+    var settlements = ['MAJ', 'GWA', 'MIR', 'ZUN', 'DOR'];
+    var counselledIds = [];
+    var referredIds = [];
+    var total = Math.min(c.counselled, 6); // show up to 6 for demo
+    for (var i = 0; i < total; i++) {
+        var s = settlements[Math.floor(Math.random() * settlements.length)];
+        var num = (100 + Math.floor(Math.random() * 800));
+        var id = 'AHMNAS-' + s + '-DUL-' + num;
+        if (i < c.referred && i < 2) { referredIds.push(id); }
+        else { counselledIds.push(id); }
+    }
+    var html =
+        '<div class="hhCounts">' +
+            '<b>' + c.counselled + '</b> counselled · <b>' + c.referred + '</b> referred' +
+        '</div>' +
+        '<button class="hhToggle" onclick="this.nextElementSibling.classList.toggle(\'hidden\')">Show household IDs ▾</button>' +
+        '<div class="hidden hhList">' +
+            '<p style="margin:6px 0 2px;font-weight:600;">Counselled:</p>' +
+            '<p style="font-size:0.85em;color:#475569;">' + (counselledIds.join('<br>') || 'None') + '</p>' +
+            '<p style="margin:8px 0 2px;font-weight:600;">Referred:</p>' +
+            '<p style="font-size:0.85em;color:#b45309;">' + (referredIds.join('<br>') || 'None') + '</p>' +
+        '</div>';
+    return html;
 }
 
 function cbdSettlements(c) {

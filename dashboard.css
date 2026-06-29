@@ -207,3 +207,9 @@ body {
     padding: 8px 16px; border-radius: 8px; cursor: pointer; margin: 8px 0;
 }
 #drillBar button:hover { opacity: 0.9; }
+.hhCounts { font-size: 1.05em; margin-bottom: 8px; }
+.hhToggle {
+    background: #f0fdfa; color: #0f766e; border: 1px solid #99f6e4;
+    padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 0.9em;
+}
+.hhList { margin-top: 8px; }
