@@ -5,10 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jagora</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f766e">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="icon" href="icons/icon-192.png">
 </head>
 <body>
     <div id="progressBar" class="progressBar hidden"></div>
     <div id="login">
+        <img src="icons/icon-192.png" alt="Jagora logo" width="120" style="display:block; margin:0 auto 12px;">
         <h1>Jagora</h1>
         <p>Sign in to continue</p>
         <input id="loginUsername" placeholder="Enter your username" autocomplete="off">
@@ -619,6 +624,13 @@ if (savedVisits) {
 var savedUser = localStorage.getItem('jagora_user');
 if (savedUser) {
     document.getElementById('loginUsername').value = savedUser;
+}
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('service-worker.js')
+            .then(function() { console.log('Jagora service worker registered'); })
+            .catch(function(err) { console.log('SW registration failed:', err); });
+    });
 }
     </script>
 </body>
