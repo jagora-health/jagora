@@ -1,4 +1,4 @@
-var CACHE_NAME = 'jagora-v2';
+var CACHE_NAME = 'jagora-v3';
 var FILES_TO_CACHE = [
   'index.html',
   'style.css',
