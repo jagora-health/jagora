@@ -8,7 +8,8 @@ var FILES_TO_CACHE = [
   'jagora-counselling.mp4', 
   'counsel-audio/faq-1.mp3', 
   'counsel-audio/faq-2.mp3', 
-  'counsel-audio/faq-3.mp3'
+  'counsel-audio/faq-3.mp3',
+  'danger-signs.jpg'
 ];
 
 // INSTALL: cache the core files so the app works offline
