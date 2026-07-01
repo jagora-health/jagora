@@ -288,7 +288,23 @@ function buildMap() {
         attribution: '© OpenStreetMap'
     }).addTo(mapObject);
     drawMarkers();
+    fitMapToData();
 }
+
+// Frame the map on the actual visit pins (real coverage, not a fixed view)
+function fitMapToData() {
+    if (!shownVisits || shownVisits.length === 0) { return; }
+    var pts = [];
+    for (var i = 0; i < shownVisits.length; i++) {
+        pts.push([shownVisits[i].lat, shownVisits[i].lng]);
+    }
+    try {
+        var bounds = L.latLngBounds(pts);
+        mapObject.fitBounds(bounds, { padding: [30, 30], maxZoom: 13 });
+    } catch (e) { /* keep default view */ }
+}
+
+var heatLayer = null;
 
 function drawMarkers() {
     for (var i = 0; i < mapMarkers.length; i++) {
@@ -296,11 +312,24 @@ function drawMarkers() {
     }
     mapMarkers = [];
 
+    // heat-style density layer (graceful fallback if plugin unavailable)
+    if (heatLayer) { mapObject.removeLayer(heatLayer); heatLayer = null; }
+    if (typeof L.heatLayer === 'function' && shownVisits.length > 0) {
+        var heatPts = [];
+        for (var h = 0; h < shownVisits.length; h++) {
+            heatPts.push([shownVisits[h].lat, shownVisits[h].lng, 0.6]);
+        }
+        heatLayer = L.heatLayer(heatPts, {
+            radius: 28, blur: 22, maxZoom: 14,
+            gradient: { 0.2: '#f59e0b', 0.5: '#f97316', 0.9: '#dc2626' }
+        }).addTo(mapObject);
+    }
+
     for (var i = 0; i < shownVisits.length; i++) {
         var v = shownVisits[i];
         var color = (v.type === 'referral') ? '#f59e0b' : '#0f766e';
         var marker = L.circleMarker([v.lat, v.lng], {
-            radius: 9,
+            radius: 6,
             color: color,
             fillColor: color,
             fillOpacity: 0.8
@@ -416,10 +445,13 @@ function buildCbdTable() {
 
     for (var i = 0; i < cbds.length; i++) {
         var c = cbds[i];
-        html += '<tr onclick="showCbdDetail(' + i + ')">' +
-            '<td>' + c.name + '</td><td>' + c.ward + '</td>' +
-            '<td>' + c.counselled + '</td><td>' + c.children + '</td>' +
-            '<td>' + c.referred + '</td></tr>';
+        var staleClass = (typeof c.lastActive === 'number' && c.lastActive >= 10) ? ' class="stale"' : '';
+        html += '<tr' + staleClass + ' onclick="showCbdDetail(' + i + ')">' +
+            '<td data-label="CBD">' + c.name + '</td>' +
+            '<td data-label="Ward">' + c.ward + '</td>' +
+            '<td data-label="Counselled">' + c.counselled + '</td>' +
+            '<td data-label="Children">' + c.children + '</td>' +
+            '<td data-label="Referred">' + c.referred + '</td></tr>';
     }
     html += '</tbody></table>';
     document.getElementById('cbdTable').innerHTML = html;

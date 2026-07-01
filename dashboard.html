@@ -18,9 +18,6 @@
     <section class="filterBar">
         <span class="filterLabel">Period:</span>
         <button onclick="applyFilter('all')">All time</button>
-        <button onclick="applyFilter('2026-01')">January</button>
-        <button onclick="applyFilter('2026-02')">February</button>
-        <button onclick="applyFilter('2026-03')">March</button>
         <span class="filterLabel">Custom:</span>
         <input type="date" id="fromDate">
         <span>to</span>
@@ -48,6 +45,11 @@
     <section class="mapSection">
         <div class="chartCard">
             <h3>Visit locations — GPS verified</h3>
+            <div class="mapLegend">
+                <span class="legItem"><span class="dot counselled"></span>Counselled</span>
+                <span class="legItem"><span class="dot referral"></span>Referral</span>
+                <span class="legItem"><span class="dot density"></span>Higher visit density</span>
+            </div>
             <div id="map"></div>
         </div>
     </section>
@@ -69,6 +71,7 @@
     </section>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="seed.js"></script>
     <script src="dashboard.js"></script>
