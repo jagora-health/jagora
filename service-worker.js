@@ -1,10 +1,14 @@
-var CACHE_NAME = 'jagora-v1';
+var CACHE_NAME = 'jagora-v2';
 var FILES_TO_CACHE = [
   'index.html',
   'style.css',
   'manifest.json',
   'icons/icon-192.png',
-  'icons/icon-512.png'
+  'icons/icon-512.png',
+  'jagora-counselling.mp4', 
+  'counsel-audio/faq-1.mp3', 
+  'counsel-audio/faq-2.mp3', 
+  'counsel-audio/faq-3.mp3'
 ];
 
 // INSTALL: cache the core files so the app works offline

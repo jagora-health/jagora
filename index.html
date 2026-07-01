@@ -124,16 +124,20 @@
     <p id="counselList"></p>
     <p>Play the comprehensive video, or jump to a chapter.</p>
     <button class="backBtn" onclick="backToCaregiverDone()">← Back (add another caregiver)</button>
-    <button onclick="playFullVideo()">▶ Play full counselling video</button>
-    <button onclick="buildFaqList(); showScreen('faq')">Questions / FAQ</button>
-    <p>Chapters</p>
-    <button onclick="alert('chapter coming soon')">1. Why diarrhoea happens</button>
-    <button onclick="alert('chapter coming soon')">2. Mixing ORS</button>
-    <button onclick="alert('chapter coming soon')">3. ORS dosing</button>
-    <button onclick="alert('chapter coming soon')">4. Giving zinc (10 days)</button>
-    <button onclick="alert('chapter coming soon')">5. Four golden rules</button>
-    <button onclick="alert('chapter coming soon')">6. Danger signs</button>
-    <button onclick="alert('chapter coming soon')">7. Preventing diarrhoea</button>
+    <video id="counselVideo" controls playsinline preload="metadata"
+    style="width:100%;max-width:360px;border-radius:10px;margin:10px auto;display:block;background:#000;">
+    <source src="jagora-counselling.mp4" type="video/mp4">
+</video>
+<p id="watchNote" style="font-size:14px;opacity:0.85;">Play through, or tap a chapter. Finish unlocks after it plays.</p>
+<button onclick="buildFaqList(); showScreen('faq')">Questions / FAQ</button>
+<p>Chapters</p>
+<button onclick="playChapter(0)">1. Why diarrhoea happens</button>
+<button onclick="playChapter(44.1)">2. Mixing ORS</button>
+<button onclick="playChapter(88.0)">3. ORS dosing</button>
+<button onclick="playChapter(107.5)">4. Giving zinc (10 days)</button>
+<button onclick="playChapter(147.4)">5. Four golden rules</button>
+<button onclick="playChapter(174.4)">6. Danger signs</button>
+<button onclick="playChapter(204.3)">7. Preventing diarrhoea</button>
     <button onclick="finishVisit()">Finish visit</button>
 </div>
 
@@ -243,7 +247,7 @@ function buildFaqList() {
                 '<br><span style="opacity:0.6;font-size:0.8em;font-weight:normal;">' + item.qEn + '</span>' +
             '</button>' +
             '<div class="hidden">' +
-                '<button onclick="alert(\'Hausa audio answer coming soon\')">▶ Saurari amsa (Hausa)</button>' +
+                '<button onclick="wireCounselVideo();">▶ Saurari amsa (Hausa)</button>' +
                 '<p>' + item.aHa + '</p>' +
                 '<p style="opacity:0.6;font-size:0.85em">' + item.aEn + '</p>' +
             '</div>';
@@ -252,6 +256,11 @@ function buildFaqList() {
 }
 function saveVisits() {
     localStorage.setItem('jagora_visits', JSON.stringify(visits));
+}
+
+function playFaqAudio(n) {
+    var a = new Audio('counsel-audio/faq-' + n + '.mp3');
+    a.play().catch(function(){ alert('Audio not found: faq-' + n + '.mp3'); });
 }
 
 function logout() {
@@ -528,10 +537,30 @@ function startAnotherCaregiver() {
         'Counselling ' + caregivers.length + ' caregiver(s): ' + ids.join(', ');
     document.getElementById('progressBar').classList.add('hidden');
     showScreen('counsel');
+    wireCounselVideo();
 }
-        function playFullVideo() {
-    alert('Playing full counselling video...');
-    videoPlayed = true;
+     function playChapter(seconds) {
+    var v = document.getElementById('counselVideo');
+    if (!v) { return; }
+    v.currentTime = seconds;
+    v.play();
+}
+function wireCounselVideo() {
+    var v = document.getElementById('counselVideo');
+    if (!v || v.dataset.wired) { return; }
+    v.dataset.wired = '1';
+    v.addEventListener('timeupdate', function() {
+        if (v.duration && v.currentTime >= v.duration - 1.5) {
+            videoPlayed = true;
+            var note = document.getElementById('watchNote');
+            if (note) { note.textContent = 'Counselling played — you can finish the visit.'; }
+        }
+    });
+    v.addEventListener('ended', function() { videoPlayed = true; });
+}
+function playFullVideo() {
+    var v = document.getElementById('counselVideo');
+    if (v) { v.currentTime = 0; v.play(); }
 }
         function startRecording() {
             navigator.mediaDevices.getUserMedia({ audio: true })
