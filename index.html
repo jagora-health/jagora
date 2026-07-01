@@ -657,7 +657,18 @@ if (savedUser) {
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
         navigator.serviceWorker.register('service-worker.js')
-            .then(function() { console.log('Jagora service worker registered'); })
+            .then(function(reg) {
+                console.log('Jagora service worker registered');
+                // check for a new version every time the app opens
+                reg.update();
+                // when a new version takes control, reload once to apply it
+                var refreshing = false;
+                navigator.serviceWorker.addEventListener('controllerchange', function() {
+                    if (refreshing) { return; }
+                    refreshing = true;
+                    window.location.reload();
+                });
+            })
             .catch(function(err) { console.log('SW registration failed:', err); });
     });
 }
