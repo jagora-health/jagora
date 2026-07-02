@@ -1,6 +1,5 @@
-var CACHE_NAME = 'jagora-v7';
+var CACHE_NAME = 'jagora-v8';
 
-// Small core files — must all cache for the app to work offline
 var CORE_FILES = [
   'index.html',
   'style.css',
@@ -13,22 +12,25 @@ var CORE_FILES = [
   'counsel-audio/faq-3.mp3'
 ];
 
-// INSTALL: cache core files reliably, and attempt the video tolerantly
+// INSTALL: cache core files, then fetch the FULL video explicitly and cache it
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
       return cache.addAll(CORE_FILES).then(function() {
-        // try to cache the video now, but don't fail install if it's slow/offline
-        return cache.add('jagora-counselling.mp4').catch(function() {
-          console.log('Video will cache on first play instead.');
-        });
+        // fetch the whole video (not a range request) so it can be cached for offline
+        return fetch('jagora-counselling.mp4', { cache: 'reload' })
+          .then(function(resp) {
+            return cache.put('jagora-counselling.mp4', resp);
+          })
+          .catch(function() {
+            console.log('Video fetch failed at install; will retry on next load.');
+          });
       });
     })
   );
   self.skipWaiting();
 });
 
-// ACTIVATE: remove old caches from previous versions
 self.addEventListener('activate', function(event) {
   event.waitUntil(
     caches.keys().then(function(keys) {
@@ -40,38 +42,48 @@ self.addEventListener('activate', function(event) {
   self.clients.claim();
 });
 
-// Is this a heavy media file? (cache-first so it plays fast + offline)
-function isMedia(url) {
-  return url.endsWith('.mp4') || url.endsWith('.mp3') ||
-         url.endsWith('.jpg') || url.endsWith('.png');
-}
-
-// FETCH
 self.addEventListener('fetch', function(event) {
   var url = event.request.url;
 
-  if (isMedia(url)) {
-    // MEDIA: cache-first. If not cached yet, fetch, play, AND store it for offline.
+  // VIDEO: always serve the full cached copy (ignore range headers)
+  if (url.indexOf('jagora-counselling.mp4') !== -1) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then(function(cache) {
+        return cache.match('jagora-counselling.mp4').then(function(cached) {
+          if (cached) { return cached; }
+          // not cached yet → fetch full, cache it, return it
+          return fetch('jagora-counselling.mp4', { cache: 'reload' }).then(function(resp) {
+            cache.put('jagora-counselling.mp4', resp.clone());
+            return resp;
+          });
+        });
+      })
+    );
+    return;
+  }
+
+  // OTHER MEDIA: cache-first
+  if (url.endsWith('.mp3') || url.endsWith('.jpg') || url.endsWith('.png')) {
     event.respondWith(
       caches.match(event.request).then(function(cached) {
-        if (cached) { return cached; }
-        return fetch(event.request).then(function(resp) {
+        return cached || fetch(event.request).then(function(resp) {
           var copy = resp.clone();
           caches.open(CACHE_NAME).then(function(c) { c.put(event.request, copy); });
           return resp;
         });
       })
     );
-  } else {
-    // APP CODE: network-first (always fresh when online), fall back to cache offline
-    event.respondWith(
-      fetch(event.request).then(function(resp) {
-        var copy = resp.clone();
-        caches.open(CACHE_NAME).then(function(c) { c.put(event.request, copy); });
-        return resp;
-      }).catch(function() {
-        return caches.match(event.request);
-      })
-    );
+    return;
   }
+
+  // APP CODE: network-first (fresh when online), cache fallback offline
+  event.respondWith(
+    fetch(event.request).then(function(resp) {
+      var copy = resp.clone();
+      caches.open(CACHE_NAME).then(function(c) { c.put(event.request, copy); });
+      return resp;
+    }).catch(function() {
+      return caches.match(event.request);
+    })
+  );
 });

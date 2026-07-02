@@ -34,7 +34,10 @@
         <input id="settlement" placeholder="Sett" maxlength="3" oninput="updatePreview(); jumpIfFull(this, 'number')">
         <input type="text" id="number" placeholder="No." maxlength="3" inputmode="numeric" oninput="updatePreview()">
         <p id="preview"></p>
-        <button onclick="goForward()">Continue</button>
+        <div class="navRow">
+            <button class="backBtn" onclick="logout()">Logout</button>
+            <button onclick="goForward()">Continue</button>
+        </div>
     </div>
     <div id="counts" class="hidden">
     <h1>Children under 5</h1>
