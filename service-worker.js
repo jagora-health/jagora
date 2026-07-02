@@ -1,4 +1,4 @@
-var CACHE_NAME = 'jagora-v9';
+var CACHE_NAME = 'jagora-v10';
 
 var CORE_FILES = [
   'index.html',
@@ -12,19 +12,15 @@ var CORE_FILES = [
   'counsel-audio/faq-3.mp3'
 ];
 
-// INSTALL: cache core files, then fetch the FULL video explicitly and cache it
+// INSTALL: cache core files, then fetch the FULL video and cache it.
+// Tell the app when everything (incl. video) is truly ready offline.
 self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
       return cache.addAll(CORE_FILES).then(function() {
-        // fetch the whole video (not a range request) so it can be cached for offline
         return fetch('jagora-counselling.mp4', { cache: 'reload' })
-          .then(function(resp) {
-            return cache.put('jagora-counselling.mp4', resp);
-          })
-          .catch(function() {
-            console.log('Video fetch failed at install; will retry on next load.');
-          });
+          .then(function(resp) { return cache.put('jagora-counselling.mp4', resp); })
+          .catch(function() { console.log('Video will cache on next online load.'); });
       });
     })
   );
@@ -42,16 +38,26 @@ self.addEventListener('activate', function(event) {
   self.clients.claim();
 });
 
+// Let the page ask "is the video cached yet?"
+self.addEventListener('message', function(event) {
+  if (event.data === 'check-video') {
+    caches.open(CACHE_NAME).then(function(cache) {
+      return cache.match('jagora-counselling.mp4');
+    }).then(function(hit) {
+      if (event.source) { event.source.postMessage(hit ? 'video-ready' : 'video-missing'); }
+    });
+  }
+});
+
 self.addEventListener('fetch', function(event) {
   var url = event.request.url;
 
-  // VIDEO: always serve the full cached copy (ignore range headers)
+  // VIDEO: always serve full cached copy (ignore range/streaming)
   if (url.indexOf('jagora-counselling.mp4') !== -1) {
     event.respondWith(
       caches.open(CACHE_NAME).then(function(cache) {
         return cache.match('jagora-counselling.mp4').then(function(cached) {
           if (cached) { return cached; }
-          // not cached yet → fetch full, cache it, return it
           return fetch('jagora-counselling.mp4', { cache: 'reload' }).then(function(resp) {
             cache.put('jagora-counselling.mp4', resp.clone());
             return resp;
@@ -62,28 +68,15 @@ self.addEventListener('fetch', function(event) {
     return;
   }
 
-  // OTHER MEDIA: cache-first
-  if (url.endsWith('.mp3') || url.endsWith('.jpg') || url.endsWith('.png')) {
-    event.respondWith(
-      caches.match(event.request).then(function(cached) {
-        return cached || fetch(event.request).then(function(resp) {
-          var copy = resp.clone();
-          caches.open(CACHE_NAME).then(function(c) { c.put(event.request, copy); });
-          return resp;
-        });
-      })
-    );
-    return;
-  }
-
-  // APP CODE: network-first (fresh when online), cache fallback offline
+  // EVERYTHING ELSE: cache-first (offline-first). Update cache in background if online.
   event.respondWith(
-    fetch(event.request).then(function(resp) {
-      var copy = resp.clone();
-      caches.open(CACHE_NAME).then(function(c) { c.put(event.request, copy); });
-      return resp;
-    }).catch(function() {
-      return caches.match(event.request);
+    caches.match(event.request).then(function(cached) {
+      var networkFetch = fetch(event.request).then(function(resp) {
+        var copy = resp.clone();
+        caches.open(CACHE_NAME).then(function(c) { c.put(event.request, copy); });
+        return resp;
+      }).catch(function() { return cached; });
+      return cached || networkFetch;
     })
   );
 });

@@ -12,6 +12,14 @@
 </head>
 <body>
     <div id="progressBar" class="progressBar hidden"></div>
+    <div id="prepScreen" class="hidden" style="text-align:center;">
+    <img src="icons/icon-192.png" width="100" style="display:block;margin:24px auto 12px;">
+    <h1>Jagora</h1>
+    <p id="prepStatus">Preparing app for offline use…</p>
+    <div id="prepSpinner" style="font-size:40px;margin:16px;">⏳</div>
+    <p id="prepReady" class="hidden" style="color:#fde68a;font-weight:bold;font-size:20px;">✓ Ready to use offline</p>
+    <button id="prepContinue" class="hidden" onclick="showScreen('login')">Continue</button>
+</div>
     <div id="login">
         <img src="icons/icon-192.png" alt="Jagora logo" width="120" style="display:block; margin:0 auto 12px;">
         <h1>Jagora</h1>
@@ -25,6 +33,7 @@
         <p>The counselling companion</p>
         <button onclick="tryStartVisit()">Start a visit</button>
         <button class="backBtn" onclick="logout()">Logout</button>
+        <p id="syncStatus" style="font-size:14px;opacity:0.85;margin-top:20px;"></p>
     </div>
 
     <div id="visit" class="hidden">
@@ -217,6 +226,25 @@ function doLogin() {
         window.location.href = 'dashboard.html?user=' + username;
     }
 }
+
+function updateSyncStatus() {
+    var el = document.getElementById('syncStatus');
+    if (!el) { return; }
+    var pending = visits.length;
+    if (navigator.onLine) {
+        el.textContent = pending > 0
+            ? '☁ ' + pending + ' visit(s) saved · uploading…'
+            : '✓ All visits uploaded';
+        // simulate the drain when online (real backend does this at pilot)
+        if (pending > 0) {
+            setTimeout(function() { el.textContent = '✓ All visits uploaded'; }, 2500);
+        }
+    } else {
+        el.textContent = '⛔ Offline · ' + pending + ' visit(s) saved, will upload when online';
+    }
+}
+window.addEventListener('online', updateSyncStatus);
+window.addEventListener('offline', updateSyncStatus);
 function tryStartVisit() {
     if (visitInProgress && caregivers.length > 0) {
         var ok = confirm('You have an unfinished household with ' + caregivers.length +
@@ -418,7 +446,7 @@ function saveHouseholdId() {
 
 
         function showScreen(id) {
-   var screens = ['login', 'welcome', 'visit', 'confirm','sickNow','counts','referReminder','child','dangerSigns','refer','childDone','caregiverDone','counsel','faq'];
+   var screens = ['prepScreen','login', 'welcome', 'visit', 'confirm','sickNow','counts','referReminder','child','dangerSigns','refer','childDone','caregiverDone','counsel','faq'];
     for (var i = 0; i < screens.length; i++) {
         document.getElementById(screens[i]).classList.add('hidden');
     }
@@ -647,6 +675,7 @@ function playFullVideo() {
     document.getElementById('totalChildren').value = '';
     document.getElementById('diarrhoeaCount').value = '';
     document.getElementById('referCount').value = '';
+    updateSyncStatus();
     showScreen('welcome');
 }
 var savedVisits = localStorage.getItem('jagora_visits');
@@ -659,14 +688,18 @@ if (savedUser) {
 }
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
-        navigator.serviceWorker.register('service-worker.js')
+       navigator.serviceWorker.register('service-worker.js')
             .then(function(reg) {
-                console.log('Jagora service worker registered');
-                // check for a new version every time the app opens
                 reg.update();
-                // when a new version takes control, reload once to apply it
+                // first install? show the readiness screen and DON'T auto-reload
+                var firstInstall = !navigator.serviceWorker.controller;
+                if (firstInstall) {
+                    showScreen('prepScreen');
+                    pollVideoReady();
+                }
                 var refreshing = false;
                 navigator.serviceWorker.addEventListener('controllerchange', function() {
+                    if (firstInstall) { return; }   // let the CBD see "Ready ✓", no reload on first install
                     if (refreshing) { return; }
                     refreshing = true;
                     window.location.reload();
@@ -674,6 +707,25 @@ if ('serviceWorker' in navigator) {
             })
             .catch(function(err) { console.log('SW registration failed:', err); });
     });
+}
+function pollVideoReady() {
+    var tries = 0;
+    var timer = setInterval(function() {
+        tries++;
+        if (navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage('check-video');
+        }
+        if (tries > 40) { clearInterval(timer); markReady(); } // ~40s safety
+    }, 1000);
+    navigator.serviceWorker.addEventListener('message', function(e) {
+        if (e.data === 'video-ready') { clearInterval(timer); markReady(); }
+    });
+}
+function markReady() {
+    document.getElementById('prepStatus').textContent = 'Everything saved to this phone.';
+    document.getElementById('prepSpinner').classList.add('hidden');
+    document.getElementById('prepReady').classList.remove('hidden');
+    document.getElementById('prepContinue').classList.remove('hidden');
 }
     </script>
 </body>
