@@ -134,7 +134,7 @@
     <div id="counsel" class="hidden">
     <h1>Counsel the caregiver</h1>
     <p id="counselList"></p>
-    <p>Play the comprehensive video, or jump to a chapter.</p>
+    <p>Play the counselling video, or tap a chapter below.</p>
     <button class="backBtn" onclick="backToCaregiverDone()">← Back (add another caregiver)</button>
     <video id="counselVideo" controls playsinline preload="metadata"
     style="width:100%;max-width:360px;border-radius:10px;margin:10px auto;display:block;background:#000;">
@@ -220,10 +220,14 @@ function doLogin() {
     localStorage.setItem('jagora_user', currentUser);
     var role = username.split('.').pop();
 
-    if (role === 'campaigner') {
+   if (role === 'campaigner') {
         showScreen('welcome');
     } else {
-        window.location.href = 'dashboard.html?user=' + username;
+        document.getElementById('loginError').style.color = '#0f766e';
+        document.getElementById('loginError').textContent = 'Loading dashboard…';
+        setTimeout(function() {
+            window.location.href = 'dashboard.html?user=' + username;
+        }, 50);
     }
 }
 
