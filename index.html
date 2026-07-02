@@ -686,20 +686,22 @@ var savedUser = localStorage.getItem('jagora_user');
 if (savedUser) {
     document.getElementById('loginUsername').value = savedUser;
 }
+var isFirstInstall = false;
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
-       navigator.serviceWorker.register('service-worker.js')
+        navigator.serviceWorker.register('service-worker.js')
             .then(function(reg) {
                 reg.update();
                 // first install? show the readiness screen and DON'T auto-reload
-                var firstInstall = !navigator.serviceWorker.controller;
-                if (firstInstall) {
+                if (!navigator.serviceWorker.controller) {
+                    isFirstInstall = true;
                     showScreen('prepScreen');
                     pollVideoReady();
                 }
                 var refreshing = false;
                 navigator.serviceWorker.addEventListener('controllerchange', function() {
-                    if (firstInstall) { return; }   // let the CBD see "Ready ✓", no reload on first install
+                    // on first install, skip the auto-reload so the CBD sees "Ready offline ✓"
+                    if (isFirstInstall) { return; }
                     if (refreshing) { return; }
                     refreshing = true;
                     window.location.reload();
