@@ -1,4 +1,4 @@
-var CACHE_NAME = 'jagora-v8';
+var CACHE_NAME = 'jagora-v9';
 
 var CORE_FILES = [
   'index.html',
